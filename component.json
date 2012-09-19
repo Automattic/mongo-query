@@ -1,0 +1,12 @@
+{
+  "name": "mongo-query",
+  "version": "0.1.0",
+  "scripts": ["index.js"],
+  "dependencies": {
+    "component/type": "*"
+  },
+  "devDependencies": {
+    "visionmedia/mocha": "*",
+    "learnboost/expect.js": "*"
+  }
+}
