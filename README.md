@@ -4,9 +4,9 @@
 Component that implements the complete MongoDB query JSON API to operate
 on individual documents.
 
-## How to use
+## Example
 
-```javascript
+```js
 var query = require('mongo-query');
 
 // our sample document
