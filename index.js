@@ -51,5 +51,5 @@ function get(obj, key){
  */
 
 function set(obj, key, val){
-  return filter.setPathValue(key, obj, val);
+  return filter.setPathValue(key, val, obj);
 }
