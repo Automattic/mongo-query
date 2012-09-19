@@ -17,45 +17,74 @@ var obj = {
   likes: [{ id: 1, name: 'Food' }, { id: 2, name: 'Stuff' }]
 };
 
-// operations return an array of modification objects
-var changes;
+// run an operation and get changes
+var changes = query(obj, { $set: { 'location.country': 'US' } });
+```
 
-// simple operation
-changes = query(obj, { $set: { name: 'Jane', age: 8 } });
-obj.name // 'changed'
-changes // [{ key: 'name', type: '$set', before: 'Tobi', after: 'TJ' }]
+## API
 
-// noop
-changes = query(obj, { $set: {} });
-changes // []
+### query(obj, filter, modifier)
 
-// target nested
-changes = query(obj, { $set: { 'location.country': 'BC' } });
-changes // [{ key: 'location.country', type: '$set', before: 'Canada', after: 'BC' }]
+  Executes the `modifier` on `obj` provided they match `filter`.
+  Returns an array of change objects (see below). If the modifier does
+  not alter the object the array will be empty.
 
-// $pop
-changes = query(obj, { $pop: { 'likes.name': 'Food' } });
-changes // [{ key: 'likes', type: '$pop', match: { name: 'Food' }, popped: [{ id: 1, name: 'Food' }] ]
+### query.get(obj, key)
 
-// $rename
-changes = query(obj, { $rename: { name: 'first' } });
-changes = [{ key: 'name', type: '$rename', before: 'name', after: 'first' }]
+  Gets the `key` from the given `obj`, which can use [dot
+  notation](http://www.mongodb.org/display/DOCS/Dot+Notation+(Reaching+into+Objects)).
+  Example: `query.get(obj, 'some.key')`.
 
-// $push (to new array)
-changes = query(obj, { $push: { inexistent: 1 } });
-obj.inexistent // [1]
-changes = [{ key: 'inexistent', type: $push, values: [1], init: true }]
+### query.set(obj, key, val)
 
-// $push (to existing array)
-changes = query(obj, { $push: { inexistent: 2 } });
-obj.inexistent // [1, 2]
-changes = [{ key: 'inexistent', type: $push, values: [2], init: false }]
+  Sets the `key` on `obj` with the given `val`. Key can use [dot
+  notation](http://www.mongodb.org/display/DOCS/Dot+Notation+(Reaching+into+Objects)).
 
-// $pushAll
-changes = query(obj, { $pushAll: { inexistent: [3, 4] } });
-obj.inexistent // [1, 2, 3, 4]
-changes = [{ key: 'inexistent', type: $push, values: [3, 4], init: false }]
+### change
+
+  All change objects contain:
+  - `key`: the key that was affected. If the positional operator was used,
+    the key is rewritten with dot notation (eg: `comments.3.date`).
+  - `type`: the type of operation that was performed
+
+  Depending on the type of operation they can contain extra fields.
+
+#### $set
+
+  - `before` value before it was changed
+  - `after` new value
+
+#### $pop
+
+  - `value` value that was popped
+  - `shift` if true, it was a shift instead of a pop
+
+#### $rename
+
+  - `before` name of the key to be renamed
+  - `after` new name
+
+#### $push
+
+  - `value` value that was pushed
+  - `init` whether the array was initialized as a result of this op
+
+#### $pushAll
+
+  - `values` values that were pushed
+  - `init` whether the array was initialized as a result of this op
+
+#### $pull
+
+  - `value` value that was pulled
+
+#### $pullAll
+
+  - `values` values that were pulled
+
+#### $unset
+
+  - no extra fields
 
 // operation with a query (needed for the positional operator)
-changes = query(obj, { $set: { 'likes.$.name': 'Dirt' } }, { 'likes.name': 'Food' });
-```
+changes = query(obj, { 'likes.name': 'Food' }, { $set: { 'likes.$.name': 'Dirt' } });
