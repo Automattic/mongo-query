@@ -1,0 +1,17 @@
+{
+  "name": "mongo-query",
+  "version": "0.1.0",
+  "dependencies": {
+    "type-component": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "expect.js": "*"
+  },
+  "component": {
+    "scripts": {
+      "mongo-query/index.js": "index.js",
+      "mongo-query/filter.js": "filter.js"
+    }
+  }
+}
