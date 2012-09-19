@@ -29,10 +29,19 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
   Returns an array of change objects (see below). If the modifier does
   not alter the object the array will be empty.
 
+### query.filter(query)
+
+  Returns a `Query` object to perform tests on.
+
+  Example: `query.filter({ a: { $gt: 3 } }).test({ a: 1 })`. For the
+  complete filter API refer to
+  [filtr](https://github.com/logicalparadox/filtr/).
+
 ### query.get(obj, key)
 
   Gets the `key` from the given `obj`, which can use [dot
   notation](http://www.mongodb.org/display/DOCS/Dot+Notation+(Reaching+into+Objects)).
+
   Example: `query.get(obj, 'some.key')`.
 
 ### query.set(obj, key, val)
@@ -87,6 +96,3 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
 #### $unset
 
   - `value` (`undefined`)
-
-// operation with a query (needed for the positional operator)
-changes = query(obj, { 'likes.name': 'Food' }, { $set: { 'likes.$.name': 'Dirt' } });
