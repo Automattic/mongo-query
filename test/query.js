@@ -15,4 +15,9 @@ describe('query', function(){
     expect(query.get(obj, 'c.f')).to.be('g');
   });
 
+  it('should expose filtering api', function(){
+    var flt = query.filter({ 'c.f': 'g' });
+    console.log(flt.test({ a: 'b', c: [{ d: 'e' }, { f: 'g' }]}));
+  });
+
 });

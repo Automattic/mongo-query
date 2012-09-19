@@ -18,8 +18,14 @@ try {
  */
 
 module.exports = exports = query;
+
+/**
+ * Filter exports.
+ */
+
 exports.get = get;
 exports.set = set;
+exports.filter = flt;
 
 /**
  * Execute a query.
@@ -52,4 +58,15 @@ function get(obj, key){
 
 function set(obj, key, val){
   return filter.setPathValue(key, val, obj);
+}
+
+/**
+ * Creates a new filter.
+ *
+ * @param {Object] query
+ * @api private
+ */
+
+function flt(obj){
+  return filter(obj);
 }
