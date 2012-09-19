@@ -46,13 +46,18 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
   - `key`: the key that was affected. If the positional operator was used,
     the key is rewritten with dot notation (eg: `comments.3.date`).
   - `type`: the type of operation that was performed
+  - `before`: value of the key before it was changed (cloned)
+  - `after`: new value of the key
 
   Depending on the type of operation they can contain extra fields.
 
 #### $set
 
-  - `before` value before it was changed
-  - `after` new value
+  - `value` that we set
+
+#### $inc
+
+  - `value` value that we increment by
 
 #### $pop
 
@@ -61,18 +66,15 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
 
 #### $rename
 
-  - `before` name of the key to be renamed
-  - `after` new name
+  - `value` new name
 
 #### $push
 
   - `value` value that was pushed
-  - `init` whether the array was initialized as a result of this op
 
 #### $pushAll
 
-  - `values` values that were pushed
-  - `init` whether the array was initialized as a result of this op
+  - `value` array of values that were pushed
 
 #### $pull
 
@@ -80,11 +82,11 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
 
 #### $pullAll
 
-  - `values` values that were pulled
+  - `value` array of values that were pulled
 
 #### $unset
 
-  - no extra fields
+  - `value` (`undefined`)
 
 // operation with a query (needed for the positional operator)
 changes = query(obj, { 'likes.name': 'Food' }, { $set: { 'likes.$.name': 'Dirt' } });
