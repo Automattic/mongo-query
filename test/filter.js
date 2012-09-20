@@ -1,5 +1,5 @@
 
-var filter = require('../filter');
+var filter = require('../filtr');
 var expect = require('expect.js');
 
 describe('filter', function () {
@@ -121,7 +121,7 @@ describe('filter', function () {
       filter.setPathValue('hello[0]', 1, obj);
       expect(obj).to.eql({ hello: [1] });
       filter.setPathValue('hello[2]', 3, obj);
-      var arr = [1]
+      var arr = [1];
       arr[2] = 3;
       expect(obj).to.eql({ hello: arr });
     });
