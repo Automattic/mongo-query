@@ -25,8 +25,10 @@ describe('query', function(){
     })).to.eql(true);
   });
 
-  it('should produce a empty changeset', function(){
+  it('should produce a empty changeset upon no match', function(){
     expect(query({}, {}, {})).to.eql([]);
+    expect(query({ a: 'b' }, {}, {})).to.eql([]);
+    expect(query({ a: 'b' }, { c: 'd' }, {})).to.eql([]);
   });
 
 });
