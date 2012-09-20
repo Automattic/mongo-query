@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var filter = require('./filter')
+var filtr = require('./filtr')
   , type;
 
 // dual `type` dependency
@@ -25,7 +25,7 @@ module.exports = exports = query;
 
 exports.get = get;
 exports.set = set;
-exports.filter = flt;
+exports.filter = filter;
 
 /**
  * Execute a query.
@@ -67,6 +67,6 @@ function set(obj, key, val){
  * @api private
  */
 
-function flt(obj){
-  return filter(obj);
+function filter(obj){
+  return filtr(obj);
 }
