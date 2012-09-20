@@ -42,20 +42,39 @@ exports.filter = filter;
 
 /**
  * Execute a query.
+ *
+ * @param {Object} object to alter
+ * @param {Object} query to filter modifications by
+ * @param {Object} update object
  */
 
-function query(obj, query, modifier){
+function query(obj, query, update){
   obj = obj || {};
   query = query || {};
-  modifier = modifier || {};
+  update = update || {};
 
-  var res = filter(query).test(obj);
+  var res;
+
+  if (object.length(query)) {
+    res = filter(query).test(obj);
+  } else {
+    res = [obj];
+  }
 
   if (res.length) {
-
+    var keys = object.keys(update);
+    for (var i = 0, l = keys.length; i < l; i++) {
+      if (mods[keys[i]]) {
+        debug('found modifier "%s"', keys[i]);
+      } else {
+        debug('skipping unknown modifier "%s"', keys[i]);
+      }
+    }
   } else {
-    return [];
+    debug("no matches for query %j", query);
   }
+
+  return [];
 }
 
 /**
