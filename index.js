@@ -53,15 +53,20 @@ function query(obj, query, update){
   query = query || {};
   update = update || {};
 
-  var res;
+  var match;
 
   if (object.length(query)) {
-    res = filter(query).test(obj);
+    match = filter(query).test(obj);
   } else {
-    res = [obj];
+    if (!object.length(update)) {
+      // noop
+      return [];
+    }
+
+    match = [obj];
   }
 
-  if (res.length) {
+  if (match.length) {
     var keys = object.keys(update);
     for (var i = 0, l = keys.length; i < l; i++) {
       if (mods[keys[i]]) {
