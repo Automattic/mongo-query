@@ -31,8 +31,18 @@ exports.filter = filter;
  * Execute a query.
  */
 
-function query(){
+function query(obj, query, modifier){
+  obj = obj || {};
+  query = query || {};
+  modifier = modifier || {};
 
+  var res = filter(query).test(obj);
+
+  if (res.length) {
+
+  } else {
+    return [];
+  }
 }
 
 /**
