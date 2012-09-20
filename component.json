@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "scripts": ["index.js"],
   "dependencies": {
-    "component/type": "*"
+    "component/type": "*",
+    "component/object": "*"
   },
   "devDependencies": {
     "visionmedia/mocha": "*",

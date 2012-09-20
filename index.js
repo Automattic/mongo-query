@@ -4,13 +4,19 @@
  */
 
 var filtr = require('./filtr')
-  , type;
+  , mods = require('./mods')
+  , object, type;
 
-// dual `type` dependency
+/**
+ * Dual require for components.
+ */
+
 try {
   type = require('type');
+  object = require('object');
 } catch(e){
   type = require('type-component');
+  object = require('object-component');
 };
 
 /**

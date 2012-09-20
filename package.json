@@ -2,7 +2,8 @@
   "name": "mongo-query",
   "version": "0.1.0",
   "dependencies": {
-    "type-component": "*"
+    "type-component": "*",
+    "object-component": "*"
   },
   "devDependencies": {
     "mocha": "*",
