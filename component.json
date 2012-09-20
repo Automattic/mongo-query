@@ -1,7 +1,7 @@
 {
   "name": "mongo-query",
   "version": "0.1.0",
-  "scripts": ["index.js"],
+  "scripts": ["index.js", "mods.js", "filtr.js"],
   "dependencies": {
     "component/type": "*",
     "component/object": "*"

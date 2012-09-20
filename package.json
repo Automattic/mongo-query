@@ -12,7 +12,8 @@
   "component": {
     "scripts": {
       "mongo-query/index.js": "index.js",
-      "mongo-query/filter.js": "filter.js"
+      "mongo-query/mods.js": "mods.js",
+      "mongo-query/filtr.js": "filtr.js"
     }
   }
 }
