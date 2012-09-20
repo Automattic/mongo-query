@@ -27,6 +27,12 @@ try {
 module.exports = exports = query;
 
 /**
+ * Export modifiers.
+ */
+
+exports.mods = mods;
+
+/**
  * Filter exports.
  */
 
