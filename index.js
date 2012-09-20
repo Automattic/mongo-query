@@ -5,6 +5,7 @@
 
 var filtr = require('./filtr')
   , mods = require('./mods')
+  , debug = require('debug')('mongo-query')
   , object, type;
 
 /**

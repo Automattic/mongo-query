@@ -2,6 +2,7 @@
   "name": "mongo-query",
   "version": "0.1.0",
   "dependencies": {
+    "debug": "*",
     "type-component": "*",
     "object-component": "*"
   },
