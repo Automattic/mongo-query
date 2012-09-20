@@ -17,6 +17,12 @@ describe('query', function(){
 
   it('should expose filtering api', function(){
     var flt = query.filter({ 'c.f': 'g' });
+    expect(flt.test({ e: { d: '' } })).to.eql([]);
+    expect(flt.test({ c: { f: '' } })).to.eql([]);
+    expect(flt.test([{ c: { f: 'g' } }])).to.eql([{ c: { f: 'g' } }]);
+    expect(flt.test({ c: { f: 'g' } }, {
+      type: 'single'
+    })).to.eql(true);
   });
 
 });
