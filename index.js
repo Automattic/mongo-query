@@ -44,7 +44,7 @@ function query(){
  */
 
 function get(obj, key){
-  return filter.getPathValue(key, obj);
+  return filtr.getPathValue(key, obj);
 }
 
 /**
@@ -57,7 +57,7 @@ function get(obj, key){
  */
 
 function set(obj, key, val){
-  return filter.setPathValue(key, val, obj);
+  return filtr.setPathValue(key, val, obj);
 }
 
 /**
