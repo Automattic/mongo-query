@@ -2,8 +2,7 @@
 // based on filtr (MIT)
 // Copyright (c) 2011-2012 Jake Luer jake@alogicalparadox.com
 
-var filter = require('../filter');
-var operators = filter.operators;
+var operators = require('../filtr').operators;
 var expect = require('expect.js');
 
 describe('filter operators', function(){
