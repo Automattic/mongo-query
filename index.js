@@ -58,11 +58,7 @@ function query(obj, query, update){
   if (object.length(query)) {
     match = filter(query).test(obj);
   } else {
-    if (!object.length(update)) {
-      // noop
-      return [];
-    }
-
+    if (!object.length(update)) return [];
     match = [obj];
   }
 
@@ -71,6 +67,14 @@ function query(obj, query, update){
     for (var i = 0, l = keys.length; i < l; i++) {
       if (mods[keys[i]]) {
         debug('found modifier "%s"', keys[i]);
+        for (var key in update[keys[i]]) {
+          var mainKey = key.split('.').pop();
+          mods[keys[i]](
+            parent(obj, key),    // parent object
+            mainKey,             // key to $set
+            update[keys[i]][key] // value
+          );
+        }
       } else {
         debug('skipping unknown modifier "%s"', keys[i]);
       }
