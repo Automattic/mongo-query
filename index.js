@@ -72,11 +72,12 @@ function query(obj, query, update){
         debug('found modifier "%s"', keys[i]);
         for (var key in update[keys[i]]) {
           var mainKey = key.split('.').pop();
-          transactions.push(mods[keys[i]](
+          var fn = mods[keys[i]](
             parent(obj, key),    // parent object
             mainKey,             // individual key to set
             update[keys[i]][key] // value
-          ));
+          );
+          if (fn) transactions.push(fn);
         }
       } else {
         debug('skipping unknown modifier "%s"', keys[i]);
