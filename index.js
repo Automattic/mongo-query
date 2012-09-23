@@ -109,7 +109,7 @@ function parent(obj, key) {
       }
 
       if ('object' == type(ret)) {
-        if (!obj.hasOwnProperty(pieces[i])) {
+        if (!ret.hasOwnProperty(pieces[i])) {
           ret[pieces[i]] = {};
         }
         ret = ret[pieces[i]];
