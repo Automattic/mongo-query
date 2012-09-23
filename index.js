@@ -87,6 +87,42 @@ function query(obj, query, update){
 }
 
 /**
+ * Gets the parent object for a given key (dot notation aware).
+ *
+ * - If a parent object doesn't exist, it's initialized.
+ * - Array index lookup is supported
+ *
+ * @param {Object} target object
+ * @param {String} key
+ * @api private
+ */
+
+function parent(obj, key) {
+  if (~key.indexOf('.')) {
+    var pieces = key.split('.');
+    var ret = obj;
+
+    for (var i = 0; i < pieces.length - 1; i++) {
+      // if the key is a number string and parent is an array
+      if (Number(pieces[i]) == pieces[i] && 'array' == type(ret)) {
+        ret = ret[Number(pieces[i])];
+      }
+
+      if ('object' == type(ret)) {
+        if (!obj.hasOwnProperty(pieces[i])) {
+          ret[pieces[i]] = {};
+        }
+        ret = ret[pieces[i]];
+      }
+    }
+
+    return ret;
+  } else {
+    return obj;
+  }
+}
+
+/**
  * Gets the given key.
  *
  * @param {Object} object to query
