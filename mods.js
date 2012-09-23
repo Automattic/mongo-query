@@ -15,14 +15,15 @@ try {
  * @param {Object} object to modify
  * @param {String} key to alter
  * @param {String} value to set
- * @return {Boolean} false if noop
+ * @return {Function} transaction
  */
 
 exports.$set = function $set(obj, key, val){
   switch (type(obj)) {
     case 'object':
-      obj[key] = val;
-      break;
+      return function(){
+        obj[key] = val;
+      };
 
     case 'array':
       throw new Error('can\'t append to array using string field name');

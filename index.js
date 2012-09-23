@@ -54,6 +54,7 @@ function query(obj, query, update){
   update = update || {};
 
   var match;
+  var log = [];
 
   if (object.length(query)) {
     match = filter(query).test(obj);
@@ -64,26 +65,35 @@ function query(obj, query, update){
 
   if (match.length) {
     var keys = object.keys(update);
+    var transactions = [];
+
     for (var i = 0, l = keys.length; i < l; i++) {
       if (mods[keys[i]]) {
         debug('found modifier "%s"', keys[i]);
         for (var key in update[keys[i]]) {
           var mainKey = key.split('.').pop();
-          mods[keys[i]](
+          transactions.push(mods[keys[i]](
             parent(obj, key),    // parent object
-            mainKey,             // key to $set
+            mainKey,             // individual key to set
             update[keys[i]][key] // value
-          );
+          ));
         }
       } else {
         debug('skipping unknown modifier "%s"', keys[i]);
+      }
+    }
+
+    if (transactions.length) {
+      // if we got here error free we process all transactions
+      for (var i = 0; i < transactions.length; i++) {
+        transactions[i]();
       }
     }
   } else {
     debug("no matches for query %j", query);
   }
 
-  return [];
+  return log;
 }
 
 /**
