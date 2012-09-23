@@ -65,7 +65,9 @@ describe('query', function(){
         query(obj, {}, { $set: { 'a.b.c': 'tobi' } });
       }).to.throwError(/only supports object not string/);
     });
+  });
 
+  describe('transactions', function(){
     it('should not execute any transactions with faulty queries', function(){
       var obj = { a: 'b', c: 'd' };
 
