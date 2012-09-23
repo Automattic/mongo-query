@@ -71,12 +71,7 @@ function query(obj, query, update){
       if (mods[keys[i]]) {
         debug('found modifier "%s"', keys[i]);
         for (var key in update[keys[i]]) {
-          var mainKey = key.split('.').pop();
-          var fn = mods[keys[i]](
-            parent(obj, key),    // parent object
-            mainKey,             // individual key to set
-            update[keys[i]][key] // value
-          );
+          var fn = mods[keys[i]](obj, key, update[keys[i]][key]);
           if (fn) transactions.push(fn);
         }
       } else {
@@ -95,40 +90,6 @@ function query(obj, query, update){
   }
 
   return log;
-}
-
-/**
- * Gets the parent object for a given key (dot notation aware).
- *
- * - If a parent object doesn't exist, it's initialized.
- * - Array index lookup is supported
- *
- * @param {Object} target object
- * @param {String} key
- * @api private
- */
-
-function parent(obj, key) {
-  if (~key.indexOf('.')) {
-    var pieces = key.split('.');
-    var ret = obj;
-
-    for (var i = 0; i < pieces.length - 1; i++) {
-      // if the key is a number string and parent is an array
-      if (Number(pieces[i]) == pieces[i] && 'array' == type(ret)) {
-        ret = ret[pieces[i]];
-      } else if ('object' == type(ret)) {
-        if (!ret.hasOwnProperty(pieces[i])) {
-          ret[pieces[i]] = {};
-        }
-        ret = ret[pieces[i]];
-      }
-    }
-
-    return ret;
-  } else {
-    return obj;
-  }
 }
 
 /**
