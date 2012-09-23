@@ -52,6 +52,12 @@ describe('query', function(){
       expect(obj.a.b.c).to.be('d');
     });
 
+    it('should $set in array items', function(){
+      var obj = { a: [ { b: 'c' }, { d: 'e' } ] };
+      var ret = query(obj, {}, { $set: { 'a.1.d': 'woot' } });
+      expect(obj).to.eql({ a: [ { b: 'c' }, { d: 'woot' } ] });
+    });
+
     it('should complain about array parent', function(){
       var obj = { a: { b: [ { c: 'd' }, { e: 'f' } ] } };
       expect(function(){

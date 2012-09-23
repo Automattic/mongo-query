@@ -116,10 +116,8 @@ function parent(obj, key) {
     for (var i = 0; i < pieces.length - 1; i++) {
       // if the key is a number string and parent is an array
       if (Number(pieces[i]) == pieces[i] && 'array' == type(ret)) {
-        ret = ret[Number(pieces[i])];
-      }
-
-      if ('object' == type(ret)) {
+        ret = ret[pieces[i]];
+      } else if ('object' == type(ret)) {
         if (!ret.hasOwnProperty(pieces[i])) {
           ret[pieces[i]] = {};
         }
