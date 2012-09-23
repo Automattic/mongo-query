@@ -51,6 +51,37 @@ describe('query', function(){
       var ret = query(obj, {}, { $set: { 'a.b.c': 'd' } });
       expect(obj.a.b.c).to.be('d');
     });
+
+    it('should complain about array parent', function(){
+      var obj = { a: { b: [ { c: 'd' }, { e: 'f' } ] } };
+      expect(function(){
+        query(obj, {}, { $set: { 'a.b.d': 'woot' } });
+      }).to.throwError(/can\'t append to array/);
+    });
+
+    it('should complain about non-object parent', function(){
+      var obj = { a: { b: 'test' } };
+      expect(function(){
+        query(obj, {}, { $set: { 'a.b.c': 'tobi' } });
+      }).to.throwError(/only supports object not string/);
+    });
+
+    it('should not execute any transactions with faulty queries', function(){
+      var obj = { a: 'b', c: 'd' };
+
+      // run a query with a working and a faulty operation
+      expect(function(){
+        query(obj, {}, {
+          $set: {
+            a: 'woot',    // should work but not be applied
+            'c.d': 'tobi' // should trigger the error
+          }
+        });
+      }).to.throwError(/only supports object not string/);
+
+      // make sure the object stayed intact
+      expect(obj).to.eql({ a: 'b', c: 'd' });
+    });
   });
 
 });
