@@ -25,9 +25,9 @@ exports.$set = function $set(obj, key, val){
       break;
 
     case 'array':
-      throw new Error("can't append to array using string field name");
+      throw new Error('can\'t append to array using string field name');
 
     default:
-      throw new Error("$set only supports object not " + type(obj));
+      throw new Error('$set only supports object not ' + type(obj));
   }
 };
