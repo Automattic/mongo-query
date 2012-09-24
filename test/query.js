@@ -76,19 +76,19 @@ describe('query', function(){
   describe('$unset', function(){
     it('should unset a simple key', function(){
       var obj = { a: 'b', c: 'd' };
-      query(obj, {}, { $unset: { c: 1 } });
+      var ret = query(obj, {}, { $unset: { c: 1 } });
       expect(obj).to.eql({ a: 'b' });
     });
 
     it('should unset a nested key', function(){
       var obj = { a: 'b', c: { d: 'e', f: 'g' } };
-      query(obj, {}, { $unset: { 'c.d': 1 } });
+      var ret = query(obj, {}, { $unset: { 'c.d': 1 } });
       expect(obj).to.eql({ a: 'b', c: { f: 'g' } });
     });
 
     it('should unset an array item', function(){
       var obj = { arr: [1, 2, 3] };
-      query(obj, {}, { $unset: { 'arr.1': 1 } });
+      var ret = query(obj, {}, { $unset: { 'arr.1': 1 } });
       expect(obj.arr[0]).to.be(1);
       expect(obj.arr[1]).to.be(undefined);
       expect(obj.arr[2]).to.be(3);
