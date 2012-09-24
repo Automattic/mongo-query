@@ -3,6 +3,8 @@
  * Module dependencies.
  */
 
+var debug = require('debug')('mongo-query');
+
 try {
   var type = require('type');
 } catch(e){
