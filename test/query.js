@@ -71,6 +71,21 @@ describe('query', function(){
         query(obj, {}, { $set: { 'a.b.c': 'tobi' } });
       }).to.throwError(/only supports object not string/);
     });
+
+    it('should work transactionally', function(){
+      var obj = { a: 'b', c: 'd' };
+      expect(function(){
+        query(obj, {}, {
+          $set: {
+            // works
+            a: 'tobi',
+            // fails
+            'c.d': 'tobi'
+          }
+        });
+      }).to.throwError(/only supports object not string/);
+      expect(obj).to.eql({ a: 'b', c: 'd' });
+    });
   });
 
   describe('$unset', function(){
@@ -111,25 +126,74 @@ describe('query', function(){
       var ret = query(obj, {}, { $unset: { 'a.b.c': 1 } });
       expect(obj).to.eql({ a: 'b' });
     });
-  });
 
-  describe('transactions', function(){
-    it('should not execute any transactions with faulty queries', function(){
+    it('should work transactionally', function(){
       var obj = { a: 'b', c: 'd' };
-
-      // run a query with a working and a faulty operation
       expect(function(){
         query(obj, {}, {
-          $set: {
-            a: 'woot',    // should work but not be applied
-            'c.d': 'tobi' // should trigger the error
-          }
+          // works
+          $unset: { a: 1 },
+          // fails
+          $set: { 'c.d': 'tobi' }
         });
       }).to.throwError(/only supports object not string/);
-
-      // make sure the object stayed intact
       expect(obj).to.eql({ a: 'b', c: 'd' });
     });
+  });
+
+  describe('$rename', function(){
+    it('should rename a key', function(){
+      var obj = { a: 'b' };
+      var ret = query(obj, {}, { $rename: { a: 'b' } });
+      expect(obj).to.eql({ b: 'b' });
+    });
+
+    it('should fail silently (missing simple)', function(){
+      var obj = { a: 'b' };
+      var ret = query(obj, {}, { $rename: { c: 'b' } });
+      expect(obj).to.eql({ a: 'b' });
+      expect(ret).to.eql([]);
+    });
+
+    it('should fail silently (missing nested)', function(){
+      var obj = { a: 'b' };
+      var ret = query(obj, {}, { $rename: { 'a.b.c': 'b' } });
+      expect(obj).to.eql({ a: 'b' });
+      expect(ret).to.eql([]);
+    });
+
+    it('should work transactionally', function(){
+      var obj = { a: 'b', c: 'd' };
+      expect(function(){
+        query(obj, {}, {
+          // works
+          $rename: { a: 'b' },
+          // fails
+          $set: { 'c.d': 'tobi' }
+        });
+      }).to.throwError(/only supports object not string/);
+      expect(obj).to.eql({ a: 'b', c: 'd' });
+    });
+  });
+
+  describe('$inc', function(){
+
+  });
+
+  describe('$pop', function(){
+
+  });
+
+  describe('$push', function(){
+
+  });
+
+  describe('$pull', function(){
+
+  });
+
+  describe('$pullAll', function(){
+
   });
 
 });
