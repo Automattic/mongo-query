@@ -24,11 +24,12 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
 ## Features
 
 - Transactional. If an op fails, the others are rolled back.
-- Precise modification logs.
+- Precise modification logs. Ops return an array of `change` objects.
   - Noops are excluded.
   - Before/after values are provided.
   - Whether the op triggered the creation of a new array.
 - Error messages almost exactly match MongoDB's.
+- Query support. Allows for support of the positional operator.
 - Wide test coverage.
 
 ## API
