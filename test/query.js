@@ -62,7 +62,7 @@ describe('query', function(){
       var obj = { a: { b: [ { c: 'd' }, { e: 'f' } ] } };
       expect(function(){
         query(obj, {}, { $set: { 'a.b.d': 'woot' } });
-      }).to.throwError(/can\'t append to array/);
+      }).to.throwError(/can\'t append to array using string field name \[d\]/);
     });
 
     it('should complain about non-object parent', function(){
