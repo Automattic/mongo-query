@@ -142,10 +142,28 @@ describe('query', function(){
   });
 
   describe('$rename', function(){
-    it('should rename a key', function(){
+    it('should rename a simple key', function(){
       var obj = { a: 'b' };
       var ret = query(obj, {}, { $rename: { a: 'b' } });
       expect(obj).to.eql({ b: 'b' });
+    });
+
+    it('should rename nested keys', function(){
+      var obj = { a: { b: 'c' } };
+      var ret = query(obj, {}, { $rename: { 'a.b': 'a.c' } });
+      expect(obj).to.eql({ a: { c: 'c' } });
+    });
+
+    it('should rename nested and initialize', function(){
+      var obj = { a: { b: 'c' } };
+      var ret = query(obj, {}, { $rename: { 'a.b': 'd.a.b' } });
+      expect(obj).to.eql({ a: { }, d: { a: { b: 'c' } } });
+    });
+
+    it('should remove source when target is invalid', function(){
+      var obj = { a: 'b', c: 'hello' };
+      var ret = query(obj, {}, { $rename: { a: 'c.d' } });
+      expect(obj).to.eql({ c: 'hello' });
     });
 
     it('should fail silently (missing simple)', function(){
@@ -157,9 +175,43 @@ describe('query', function(){
 
     it('should fail silently (missing nested)', function(){
       var obj = { a: 'b' };
-      var ret = query(obj, {}, { $rename: { 'a.b.c': 'b' } });
+      var ret = query(obj, {}, { $rename: { 'w.b.c': 'b' } });
       expect(obj).to.eql({ a: 'b' });
       expect(ret).to.eql([]);
+    });
+
+    it('should complain about same source and target', function(){
+      var obj = { a: 'b' };
+
+      expect(function(){
+        query(obj, {}, { $rename: { a: 'a' } });
+      }).to.throwError(/\$rename source must differ from target/);
+
+      // even when the key doesn't exist
+      expect(function(){
+        query(obj, {}, { $rename: { r: 'r' } });
+      }).to.throwError(/\$rename source must differ from target/);
+    });
+
+    it('shuld complain about target comprised within source', function(){
+      var obj = { a: { b: 'c' } };
+
+      expect(function(){
+        query(obj, {}, { $rename: { 'a.b': 'a' } });
+      }).to.throwError(/\$rename target may not be a parent of source/);
+
+      // even when the key doesn't exist
+      expect(function(){
+        query(obj, {}, { $rename: { 'r.r': 'r' } });
+      }).to.throwError(/\$rename target may not be a parent of source/);
+    });
+
+    it('should complain about non-object parent', function(){
+      var obj = { a: 'b' };
+      expect(function(){
+        var ret = query(obj, {}, { $rename: { 'a.b.c': 'b' } });
+      }).to.throwError(/\$rename source field invalid/);
+      expect(obj).to.eql({ a: 'b' });
     });
 
     it('should work transactionally', function(){
