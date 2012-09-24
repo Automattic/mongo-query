@@ -31,7 +31,14 @@ exports.$set = function $set(obj, path, val){
       };
 
     case 'array':
-      throw new Error('can\'t append to array using string field name [' + key + ']');
+      if (numeric(key)) {
+        return function(){
+          obj[key] = val;
+        };
+      } else {
+        throw new Error('can\'t append to array using string field name [' + key + ']');
+      }
+      break;
 
     default:
       throw new Error('$set only supports object not ' + type(obj));
@@ -59,6 +66,9 @@ exports.$unset = function $unset(obj, path){
           // reminder: `delete arr[1]` === `delete arr['1']` [!]
           delete obj[key];
         };
+      } else {
+        // we fail silently
+        debug('ignoring unset of inexisting key');
       }
   }
 };
@@ -130,6 +140,7 @@ exports.$inc = function $inc(obj, path, inc){
   var key = path.split('.').pop();
 
   switch (type(obj)) {
+    case 'array':
     case 'object':
       if (obj.hasOwnProperty(key)) {
         if ('number' != type(obj[key])) {
@@ -139,15 +150,14 @@ exports.$inc = function $inc(obj, path, inc){
         return function(){
           obj[key] += inc;
         };
-      } else {
+      } else if('object' == type(obj) || numeric(key)){
         return function(){
           obj[key] = inc;
         };
+      } else {
+        throw new Error('can\'t append to array using string field name [' + key + ']');
       }
       break;
-
-    case 'array':
-      throw new Error('can\'t append to array using string field name [' + key + ']');
 
     default:
       throw new Error('Cannot apply $inc modifier to non-number');

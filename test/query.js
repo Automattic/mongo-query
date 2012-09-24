@@ -37,19 +37,25 @@ describe('query', function(){
     it('should $set simple key', function(){
       var obj = { a: 'b' };
       var ret = query(obj, {}, { $set: { a: 'c' } });
-      expect(obj.a).to.be('c');
+      expect(obj).to.eql({ a: 'c' });
     });
 
     it('should $set nested', function(){
       var obj = { a: { b: 'c' } };
       var ret = query(obj, {}, { $set: { 'a.b': 'e' } });
-      expect(obj.a.b).to.be('e');
+      expect(obj).to.eql({ a: { b: 'e' } });
     });
 
     it('should initialize nested', function(){
       var obj = {};
       var ret = query(obj, {}, { $set: { 'a.b.c': 'd' } });
-      expect(obj.a.b.c).to.be('d');
+      expect(obj).to.eql({ a: { b: { c: 'd' } } });
+    });
+
+    it('should set array members', function(){
+      var obj = { a: [1, 2, 3] };
+      var ret = query(obj, {}, { $set: { 'a.1': 'd' } });
+      expect(obj).to.eql({ a: [1, 'd', 3] });
     });
 
     it('should $set in array items', function(){
@@ -245,6 +251,12 @@ describe('query', function(){
       var obj = { a: { b: 3 } };
       var ret = query(obj, {}, { $inc: { 'a.b': -3 } });
       expect(obj).to.eql({ a: { b: 0 } });
+    });
+
+    it('should inc array members', function(){
+      var obj = { a: [3] };
+      var ret = query(obj, {}, { $inc: { 'a.0': -3 } });
+      expect(obj).to.eql({ a: [0] });
     });
 
     it('should initialize to the provided value', function(){
