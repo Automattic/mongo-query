@@ -310,7 +310,56 @@ describe('query', function(){
   });
 
   describe('$pop', function(){
+    it('should pop', function(){
+      var obj = { a: [1,2,3] };
+      var ret = query(obj, {}, { $pop: { a: 1 } });
+      expect(obj).to.eql({ a: [1, 2] });
+    });
 
+    it('should shift', function(){
+      var obj = { a: [1,2,3] };
+      var ret = query(obj, {}, { $pop: { a: -1 } });
+      expect(obj).to.eql({ a: [2, 3] });
+    });
+
+    it('should pop nested', function(){
+      var obj = { a: { hello: [1,2,3] } };
+      var ret = query(obj, {}, { $pop: { 'a.hello': -1 } });
+      expect(obj).to.eql({ a: { hello: [2, 3] } });
+    });
+
+    it('should work with empty arrays', function(){
+      var obj = { a: [] };
+      var ret = query(obj, {}, { $pop: { a: 1 } });
+      expect(obj).to.eql({ a: [] });
+    });
+
+    it('should ignore inexisting keys', function(){
+      var obj = { a: [1,2,3] };
+      var ret = query(obj, {}, { $pop: { b: -1 } });
+      expect(obj).to.eql({ a: [1, 2, 3] });
+    });
+
+    it('should complain about non-array types', function(){
+      var obj = { a: 'string' };
+      expect(function(){
+        query(obj, {}, { $pop: { a: 1 } });
+      }).to.throwError(/Cannot apply \$pop modifier to non-array/);
+      expect(obj).to.eql({ a: 'string' });
+    });
+
+    it('should work transactionally', function(){
+      var obj = { a: 1, c: 'd' };
+      expect(function(){
+        query(obj, {}, {
+          // works
+          $inc: { a: 1 },
+          // fails
+          $set: { 'c.d': 'tobi' }
+        });
+      }).to.throwError(/only supports object not string/);
+      expect(obj).to.eql({ a: 1, c: 'd' });
+    });
   });
 
   describe('$push', function(){

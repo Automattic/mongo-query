@@ -165,6 +165,56 @@ exports.$inc = function $inc(obj, path, inc){
 };
 
 /**
+ * Performs an `$pop`.
+ *
+ * @param {Object} object to modify
+ * @param {String} path to alter
+ * @param {String} value to set
+ * @return {Function} transaction (unless noop)
+ */
+
+exports.$pop = function $pop(obj, path, val){
+  obj = parent(obj, path);
+  var key = path.split('.').pop();
+
+  // we make sure the array is not just the parent of the main key
+  switch (type(obj)) {
+    case 'array':
+    case 'object':
+      if (obj.hasOwnProperty(key)) {
+        switch (type(obj[key])) {
+          case 'array':
+            if (obj[key].length) {
+              return function(){
+                if (-1 == val) {
+                  obj[key].shift();
+                } else {
+                  // mongodb allows any value to pop
+                  obj[key].pop();
+                }
+              };
+            }
+            break;
+
+          case 'undefined':
+            debug('ignoring pop to inexisting key');
+            break;
+
+          default:
+            throw new Error('Cannot apply $pop modifier to non-array');
+        }
+      } else {
+        debug('ignoring pop to inexisting key');
+      }
+      break;
+
+    case 'undefined':
+      debug('ignoring pop to inexisting key');
+      break;
+  }
+};
+
+/**
  * Gets the parent object for a given key (dot notation aware).
  *
  * - If a parent object doesn't exist, it's initialized.
@@ -197,4 +247,16 @@ function parent(obj, key, init) {
   } else {
     return obj;
   }
+}
+
+/**
+ * Helper to determine if a value is numeric.
+ *
+ * @param {String|Number} value
+ * @return {Boolean} true if numeric
+ * @api private
+ */
+
+function numeric(val){
+  return 'number' == type(val) || Number(val) == val;
 }
