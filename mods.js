@@ -83,11 +83,12 @@ exports.$rename = function $rename(obj, path, newKey){
     throw new Error('$rename target may not be a parent of source');
   }
 
-  var key = path.split('.').pop();
   var p = parent(obj, path);
   var t = type(p);
 
   if ('object' == t) {
+    var key = path.split('.').pop();
+
     if (p.hasOwnProperty(key)) {
       return function(){
         var val = p[key];
@@ -103,6 +104,8 @@ exports.$rename = function $rename(obj, path, newKey){
           debug('invalid $rename target path type');
         }
       };
+    } else {
+      debug('ignoring rename from inexisting source');
     }
   } else if ('undefined' != t) {
     throw new Error('$rename source field invalid');
