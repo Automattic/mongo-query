@@ -209,7 +209,7 @@ describe('query', function(){
     it('should complain about non-object parent', function(){
       var obj = { a: 'b' };
       expect(function(){
-        var ret = query(obj, {}, { $rename: { 'a.b.c': 'b' } });
+        query(obj, {}, { $rename: { 'a.b.c': 'b' } });
       }).to.throwError(/\$rename source field invalid/);
       expect(obj).to.eql({ a: 'b' });
     });
@@ -229,7 +229,72 @@ describe('query', function(){
   });
 
   describe('$inc', function(){
+    it('should inc', function(){
+      var obj = { a: 3 };
+      var ret = query(obj, {}, { $inc: { a: 1 } });
+      expect(obj).to.eql({ a: 4 });
+    });
 
+    it('should inc (custom)', function(){
+      var obj = { a: 3 };
+      var ret = query(obj, {}, { $inc: { a: -3 } });
+      expect(obj).to.eql({ a: 0 });
+    });
+
+    it('should inc nested', function(){
+      var obj = { a: { b: 3 } };
+      var ret = query(obj, {}, { $inc: { 'a.b': -3 } });
+      expect(obj).to.eql({ a: { b: 0 } });
+    });
+
+    it('should initialize to the provided value', function(){
+      var obj = { hello: 'world' };
+      var ret = query(obj, {}, { $inc: { a: 3 } });
+      expect(obj).to.eql({ hello: 'world', a: 3 });
+    });
+
+    it('should initialize to the provided value nested', function(){
+      var obj = { hello: 'world' };
+      var ret = query(obj, {}, { $inc: { 'a.b': -3 } });
+      expect(obj).to.eql({ hello: 'world', a: { b: -3 } });
+    });
+
+    it('should complain about non-numeric increments', function(){
+      var obj  = { a: 5 };
+      expect(function(){
+        query(obj, {}, { $inc: { a: '1' } });
+      }).to.throwError(/Modifier \$inc allowed for numbers only/);
+      expect(obj).to.eql({ a: 5 });
+    });
+
+    it('should complain about non-numeric targets', function(){
+      var obj  = { hello: 'world' };
+      expect(function(){
+        query(obj, {}, { $inc: { hello: 1 } });
+      }).to.throwError(/Cannot apply \$inc modifier to non-number/);
+      expect(obj).to.eql({ hello: 'world' });
+    });
+
+    it('should complain about array target', function(){
+      var obj  = { hello: [{ a: 1 }, { a: 2 }] };
+      expect(function(){
+        query(obj, {}, { $inc: { 'hello.a': 1 } });
+      }).to.throwError(/can\'t append to array using string field name \[a\]/);
+      expect(obj).to.eql({ hello: [{ a: 1 }, { a: 2 }] });
+    });
+
+    it('should work transactionally', function(){
+      var obj = { a: 1, c: 'd' };
+      expect(function(){
+        query(obj, {}, {
+          // works
+          $inc: { a: 1 },
+          // fails
+          $set: { 'c.d': 'tobi' }
+        });
+      }).to.throwError(/only supports object not string/);
+      expect(obj).to.eql({ a: 1, c: 'd' });
+    });
   });
 
   describe('$pop', function(){

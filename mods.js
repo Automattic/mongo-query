@@ -113,6 +113,48 @@ exports.$rename = function $rename(obj, path, newKey){
 };
 
 /**
+ * Performs an `$inc`.
+ *
+ * @param {Object} object to modify
+ * @param {String} path to alter
+ * @param {String} value to set
+ * @return {Function} transaction (unless noop)
+ */
+
+exports.$inc = function $inc(obj, path, inc){
+  if ('number' != type(inc)) {
+    throw new Error('Modifier $inc allowed for numbers only');
+  }
+
+  obj = parent(obj, path, true);
+  var key = path.split('.').pop();
+
+  switch (type(obj)) {
+    case 'object':
+      if (obj.hasOwnProperty(key)) {
+        if ('number' != type(obj[key])) {
+          throw new Error('Cannot apply $inc modifier to non-number');
+        }
+
+        return function(){
+          obj[key] += inc;
+        };
+      } else {
+        return function(){
+          obj[key] = inc;
+        };
+      }
+      break;
+
+    case 'array':
+      throw new Error('can\'t append to array using string field name [' + key + ']');
+
+    default:
+      throw new Error('Cannot apply $inc modifier to non-number');
+  }
+};
+
+/**
  * Gets the parent object for a given key (dot notation aware).
  *
  * - If a parent object doesn't exist, it's initialized.
