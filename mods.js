@@ -10,12 +10,12 @@ try {
 }
 
 /**
- * Performs a `$set`
+ * Performs a `$set`.
  *
  * @param {Object} object to modify
  * @param {String} path to alter
  * @param {String} value to set
- * @return {Function} transaction
+ * @return {Function} transaction (unless noop)
  */
 
 exports.$set = function $set(obj, path, val){
@@ -37,12 +37,12 @@ exports.$set = function $set(obj, path, val){
 };
 
 /**
- * Performs an `$unset`
+ * Performs an `$unset`.
  *
  * @param {Object} object to modify
  * @param {String} path to alter
  * @param {String} value to set
- * @return {Function} transaction
+ * @return {Function} transaction (unless noop)
  */
 
 exports.$unset = function $unset(obj, path){
