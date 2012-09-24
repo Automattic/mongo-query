@@ -64,6 +64,52 @@ exports.$unset = function $unset(obj, path){
 };
 
 /**
+ * Performs a `$rename`.
+ *
+ * @param {Object} object to modify
+ * @param {String} path to alter
+ * @param {String} value to set
+ * @return {Function} transaction (unless noop)
+ */
+
+exports.$rename = function $rename(obj, path, newKey){
+  // target = source
+  if (path == newKey) {
+    throw new Error('$rename source must differ from target');
+  }
+
+  // target is parent of source
+  if (0 === path.indexOf(newKey + '.')) {
+    throw new Error('$rename target may not be a parent of source');
+  }
+
+  var key = path.split('.').pop();
+  var p = parent(obj, path);
+  var t = type(p);
+
+  if ('object' == t) {
+    if (p.hasOwnProperty(key)) {
+      return function(){
+        var val = p[key];
+        delete p[key];
+
+        // target does initialize the path
+        var newp = parent(obj, newKey, true);
+
+        // and also fails silently upon type mismatch
+        if ('object' == type(newp)) {
+          newp[newKey.split('.').pop()] = val;
+        } else {
+          debug('invalid $rename target path type');
+        }
+      };
+    }
+  } else if ('undefined' != t) {
+    throw new Error('$rename source field invalid');
+  }
+};
+
+/**
  * Gets the parent object for a given key (dot notation aware).
  *
  * - If a parent object doesn't exist, it's initialized.
