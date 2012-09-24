@@ -96,19 +96,19 @@ describe('query', function(){
 
     it('should fail silently (missing simple)', function(){
       var obj = { a: 'b' };
-      query(obj, {}, { $unset: { c: 1 } });
+      var ret = query(obj, {}, { $unset: { c: 1 } });
       expect(obj).to.eql({ a: 'b' });
     });
 
     it('should fail silently and skip initialization (missing nested)', function(){
       var obj = { a: 'b' };
-      query(obj, {}, { $unset: { 'c.d.e.f': 1 } });
+      var ret = query(obj, {}, { $unset: { 'c.d.e.f': 1 } });
       expect(obj).to.eql({ a: 'b' });
     });
 
     it('should fail silently (bad type)', function(){
       var obj = { a: 'b' };
-      query(obj, {}, { $unset: { 'a.b.c': 1 } });
+      var ret = query(obj, {}, { $unset: { 'a.b.c': 1 } });
       expect(obj).to.eql({ a: 'b' });
     });
   });
