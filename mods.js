@@ -319,6 +319,128 @@ exports.$pushAll = function $pushAll(obj, path, val){
 };
 
 /**
+ * Performs a `$pull`.
+ */
+
+exports.$pull = function $pull(obj, path, val){
+  obj = parent(obj, path, true);
+  var key = path.split('.').pop();
+
+  switch (type(obj)) {
+    case 'object':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          obj[key] = obj[key].filter(pull([val]));
+        } else {
+          throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
+        }
+      }
+      break;
+
+    case 'array':
+      break;
+  }
+};
+
+/**
+ * Performs a `$pullAll`.
+ */
+
+exports.$pullAll = function $pullAll(obj, path, val){
+  if ('array' != type(val)) {
+    throw new Error('Modifier $pushAll/pullAll allowed for arrays only');
+  }
+};
+
+/**
+ * Pull helper.
+ *
+ * @param {Array} array of values to match
+ * @return {Function} that you can .filter an array with
+ */
+
+function pull(vals){
+  return function(val){
+    for (var i = 0; i < vals.length; i++) {
+      var matcher = val[i];
+      if ('object' == type(matcher)) {
+        // we only are only interested in obj <-> obj comparisons
+        if ('object' == type(val)) {
+          var match = true;
+          for (var i in matcher) {
+            if (matcher.hasOwnProperty(i)) {
+              // if a single key doesn't match we move on
+              if (!eql(matcher[i], val[i])) {
+                match = false;
+                break;
+              }
+            }
+          }
+          if (match) return false;
+        } else {
+          debug('ignoring pull match against object');
+        }
+      } else {
+        if (eql(val[i], val)) return false;
+      }
+    }
+    return true;
+  };
+}
+
+/**
+ * Compares an existing value with a supplied matcher.
+ *
+ * @param {Object} matcher
+ * @param {Object} value
+ * @return {Boolean} true if they match
+ */
+
+function eql(matcher, val){
+  switch (type(matcher)) {
+    case 'null':
+    case 'undefined':
+      // we treat null as undefined
+      return null == val;
+
+    case 'array':
+      if ('array' == type(val) && matcher.length == val.length) {
+        for (var i = 0; i < matcher.length; i++) {
+          if (!eql(val[i], matcher[i])) return false;
+        }
+        return true;
+      } else {
+        return false;
+      }
+      break;
+
+    case 'object':
+      // object can match keys in any order
+      var keys = {};
+
+      // we match all values of `matcher` in `val`
+      for (var i in matcher) {
+        if (matcher.hasOwnProperty(i)) {
+          if (!eql(matcher[i], val[i])) return false;
+        }
+        keys[i] = true;
+      }
+
+      // we make sure `val` doesn't have extra keys
+      for (var i in val) {
+        if (val.hasOwnProperty(i) && !keys.hasOwnProperty(i)) {
+          return false;
+        }
+      }
+
+      return true;
+
+    default:
+      return matcher === val;
+  }
+}
+
+/**
  * Gets the parent object for a given key (dot notation aware).
  *
  * - If a parent object doesn't exist, it's initialized.
