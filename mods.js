@@ -215,6 +215,51 @@ exports.$pop = function $pop(obj, path, val){
 };
 
 /**
+ * Performs a `$push`.
+ */
+
+exports.$push = function $push(obj, path, val){
+  obj = parent(obj, path, true);
+  var key = path.split('.').pop();
+
+  switch (type(obj)) {
+    case 'object':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          return function(){
+            obj[key].push(val);
+          };
+        } else {
+          throw new Error('Cannot apply $push/$pushAll modifier to non-array');
+        }
+      } else {
+        return function(){
+          obj[key] = [val];
+        };
+      }
+      break;
+
+    case 'array':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          return function(){
+            obj[key].push(val);
+          };
+        } else {
+          throw new Error('Cannot apply $push/$pushAll modifier to non-array');
+        }
+      } else if (numeric(key)) {
+        return function(){
+          obj[key] = [val];
+        };
+      } else {
+        throw new Error('can\'t append to array using string field name [' + key + ']');
+      }
+      break;
+  }
+};
+
+/**
  * Gets the parent object for a given key (dot notation aware).
  *
  * - If a parent object doesn't exist, it's initialized.

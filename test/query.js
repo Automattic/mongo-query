@@ -363,7 +363,60 @@ describe('query', function(){
   });
 
   describe('$push', function(){
+    it('should push', function(){
+      var obj = { a: [] };
+      var ret = query(obj, {}, { $push: { a: 1 } });
+      expect(obj).to.eql({ a: [1] });
+    });
 
+    it('should push nested', function(){
+      var obj = { a: { b: [] } };
+      var ret = query(obj, {}, { $push: { 'a.b': [{ a: 1 }] } });
+      expect(obj).to.eql({ a: { b: [[{ a: 1 }]] } });
+    });
+
+    it('should initialize', function(){
+      var obj = {};
+      var ret = query(obj, {}, { $push: { 'a.b': 1 } });
+      expect(obj).to.eql({ a: { b: [1] } });
+    });
+
+    it('should push to array member', function(){
+      var obj = { a: { b: [[]] } };
+      var ret = query(obj, {}, { $push: { 'a.b.0': 'test' } });
+      expect(obj).to.eql({ a: { b: [['test']] } });
+    });
+
+    it('should initialize array member', function(){
+      var obj = { a: { b: [] } };
+      var ret = query(obj, {}, { $push: { 'a.b.1': 'test' } });
+      var arr = [];
+      arr[1] = ['test'];
+      expect(obj).to.eql({ a: { b: arr } });
+    });
+
+    it('should complain about non-array', function(){
+      var obj = { a: 'hello' };
+      expect(function(){
+        query(obj, {}, { $push: { a: 'test' } });
+      }).to.throwError(/Cannot apply \$push\/\$pushAll modifier to non-array/);
+      expect(obj).to.eql({ a: 'hello' });
+    });
+
+    it('should complain about array field', function(){
+      var obj = { a: [] };
+      expect(function(){
+        query(obj, {}, { $push: { 'a.test': 1 } });
+      }).to.throwError(/can\'t append to array using string field name \[test\]/);
+      expect(obj).to.eql({ a: [] });
+    });
+
+    it('should complain about non-array array member', function(){
+      var obj = { a: [1, 2] };
+      expect(function(){
+        query(obj, {}, { $push: { 'a.1': 'test' } });
+      }).to.throwError(/Cannot apply \$push\/\$pushAll modifier to non-array/);
+    });
   });
 
   describe('$pull', function(){
