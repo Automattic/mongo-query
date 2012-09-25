@@ -486,8 +486,102 @@ describe('query', function(){
     });
   });
 
-  describe('$pull', function(){
+  describe.only('$pull', function(){
+    it('should pull a number', function(){
+      var obj = { arr: [1, '1', 2] };
+      var ret = query(obj, {}, { $pull: { arr: 1 } });
+      expect(obj).to.eql({ arr: ['1', 2] });
+    });
 
+    it('should pull multiple values', function(){
+      var obj = { arr: [1, '1', 2, 1, 1, 1] };
+      var ret = query(obj, {}, { $pull: { arr: 1 } });
+      expect(obj).to.eql({ arr: ['1', 2] });
+    });
+
+    it('should treat nulls and undefined equally', function(){
+      var obj = { arr: [null, undefined, 1, 2, null, 3, undefined] };
+      query(obj, {}, { $pull: { arr: null } });
+      expect(obj).to.eql({ arr: [1, 2, 3] });
+    });
+
+    it('should pull arrays based on exact match', function(){
+      var obj = { arr: [ [{ 1: 2, 3: 4}], [true] ] };
+
+      // attemp to pull first item of array
+      var ret = query(obj, {}, { $pull: { arr: [{ 1: 2 }] } });
+      expect(ret).to.eql([]);
+      expect(obj).to.eql({ arr: [ [{ 1: 2, 3: 4}], [true] ] });
+
+      // pull first item
+      var ret = query(obj, {}, { $pull: { arr: [{ 1: 2, 3: 4 }] } });
+      expect(obj).to.eql({ arr: [ [true] ] });
+
+      // pull remaining item
+      var ret = query(obj, {}, { $pull: { arr: [true] } });
+      expect(obj).to.eql({ arr: [] });
+    });
+
+    it('should strip objects based on partial object matches', function(){
+      var obj = {
+        arr: [
+          { hello: 'world' },
+          { hello: 'world', extra: 'sth' },
+          {},
+          { a: 'b' },
+          5
+        ]
+      };
+      query(obj, {}, { $pull: { hello: 'world' } });
+      expect(obj).to.eql({ arr: [{}, { a: 'b' }, 5] });
+      query(obj, {}, { $pull: {} });
+      expect(obj).to.eql({ arr: [{ a: 'b' }, 5] });
+    });
+
+    it('should work with array members', function(){
+      var obj = {
+        arr: [
+          500,
+          [
+            { hello: 'world' },
+            { hello: 'world', extra: 'sth' },
+            {},
+            { a: 'b' },
+            5
+          ]
+        ]
+      };
+      query(obj, {}, { $pull: { 'arr.1': { hello: 'world' } } });
+      expect(obj).to.eql({ 'arr.1': [500, [{}, { a: 'b' }, 5]] });
+      query(obj, {}, { $pull: { 'arr.1': {} } });
+      expect(obj).to.eql({ arr: [500, [{ a: 'b' }, 5]] });
+    });
+
+    it('should complain about non-array value', function(){
+      var obj = { a: [] };
+      expect(function(){
+        query(obj, {}, { $pull: { 'a.1': 'woot' } });
+      }).to.throwError(/Cannot apply \$pull\/\$pullAll modifier to non-array/);
+      expect(obj).eql({ a: [] });
+    });
+  });
+
+  describe('$pullAll', function(){
+    it('should complain about non-array targets', function(){
+      var obj = { hello: ['world'] };
+      expect(function(){
+        query(obj, {}, { $pullAll: { hello: 'world' } });
+      }).to.throwError(/Modifier \$pushAll\/pullAll allowed for arrays only/);
+      expect(obj).to.eql({ hello: 'world' });
+    });
+
+    it('should complain about non-array value', function(){
+      var obj = { a: [] };
+      expect(function(){
+        query(obj, {}, { $pullAll: { 'a.1': 'woot' } });
+      }).to.throwError(/Cannot apply \$pull\/\$pullAll modifier to non-array/);
+      expect(obj).eql({ a: [] });
+    });
   });
 
   describe('$pullAll', function(){
