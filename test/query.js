@@ -416,6 +416,73 @@ describe('query', function(){
       expect(function(){
         query(obj, {}, { $push: { 'a.1': 'test' } });
       }).to.throwError(/Cannot apply \$push\/\$pushAll modifier to non-array/);
+      expect(obj).to.eql({ a: [1, 2] });
+    });
+  });
+
+  describe('$pushAll', function(){
+    it('should push', function(){
+      var obj = { a: [] };
+      var ret = query(obj, {}, { $pushAll: { a: [1, 2] } });
+      expect(obj).to.eql({ a: [1, 2] });
+    });
+
+    it('should push nested', function(){
+      var obj = { a: { b: [] } };
+      var ret = query(obj, {}, { $pushAll: { 'a.b': [1, [{ a: 1 }]] } });
+      expect(obj).to.eql({ a: { b: [1, [{ a: 1 }]] } });
+    });
+
+    it('should initialize', function(){
+      var obj = {};
+      var ret = query(obj, {}, { $pushAll: { 'a.b': [1] } });
+      expect(obj).to.eql({ a: { b: [1] } });
+    });
+
+    it('should push to array member', function(){
+      var obj = { a: { b: [[]] } };
+      var ret = query(obj, {}, { $pushAll: { 'a.b.0': ['hello', 'world'] } });
+      expect(obj).to.eql({ a: { b: [['hello', 'world']] } });
+    });
+
+    it('should initialize array member', function(){
+      var obj = { a: { b: [] } };
+      var ret = query(obj, {}, { $pushAll: { 'a.b.1': ['this', 'is', 'a', 'test'] } });
+      var arr = [];
+      arr[1] = ['this', 'is', 'a', 'test'];
+      expect(obj).to.eql({ a: { b: arr } });
+    });
+
+    it('should complain about non-array', function(){
+      var obj = { a: 'hello' };
+      expect(function(){
+        query(obj, {}, { $pushAll: { a: ['a', 'test'] } });
+      }).to.throwError(/Cannot apply \$push\/\$pushAll modifier to non-array/);
+      expect(obj).to.eql({ a: 'hello' });
+    });
+
+    it('should complain about array field', function(){
+      var obj = { a: [] };
+      expect(function(){
+        query(obj, {}, { $pushAll: { 'a.test': [1] } });
+      }).to.throwError(/can\'t append to array using string field name \[test\]/);
+      expect(obj).to.eql({ a: [] });
+    });
+
+    it('should complain about non-array array member', function(){
+      var obj = { a: [1, 2] };
+      expect(function(){
+        query(obj, {}, { $pushAll: { 'a.1': ['a', 'test'] } });
+      }).to.throwError(/Cannot apply \$push\/\$pushAll modifier to non-array/);
+      expect(obj).to.eql({ a: [1, 2] });
+    });
+
+    it('should complain about non-array value', function(){
+      var obj = { a: [] };
+      expect(function(){
+        query(obj, {}, { $pushAll: { 'a.1': 'woot' } });
+      }).to.throwError(/Modifier \$pushAll\/pullAll allowed for arrays only/);
+      expect(obj).eql({ a: [] });
     });
   });
 

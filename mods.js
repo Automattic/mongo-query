@@ -216,6 +216,11 @@ exports.$pop = function $pop(obj, path, val){
 
 /**
  * Performs a `$push`.
+ *
+ * @param {Object} object to modify
+ * @param {String} path to alter
+ * @param {Object} value to push
+ * @return {Function} transaction (unless noop)
  */
 
 exports.$push = function $push(obj, path, val){
@@ -251,6 +256,60 @@ exports.$push = function $push(obj, path, val){
       } else if (numeric(key)) {
         return function(){
           obj[key] = [val];
+        };
+      } else {
+        throw new Error('can\'t append to array using string field name [' + key + ']');
+      }
+      break;
+  }
+};
+
+/**
+ * Performs a `$pushAll`.
+ *
+ * @param {Object} object to modify
+ * @param {String} path to alter
+ * @param {Array} values to push
+ * @return {Function} transaction (unless noop)
+ */
+
+exports.$pushAll = function $pushAll(obj, path, val){
+  if ('array' != type(val)) {
+    throw new Error('Modifier $pushAll/pullAll allowed for arrays only');
+  }
+
+  obj = parent(obj, path, true);
+  var key = path.split('.').pop();
+
+  switch (type(obj)) {
+    case 'object':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          return function(){
+            obj[key].push.apply(obj[key], val);
+          };
+        } else {
+          throw new Error('Cannot apply $push/$pushAll modifier to non-array');
+        }
+      } else {
+        return function(){
+          obj[key] = val;
+        };
+      }
+      break;
+
+    case 'array':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          return function(){
+            obj[key].push.apply(obj[key], val);
+          };
+        } else {
+          throw new Error('Cannot apply $push/$pushAll modifier to non-array');
+        }
+      } else if (numeric(key)) {
+        return function(){
+          obj[key] = val;
         };
       } else {
         throw new Error('can\'t append to array using string field name [' + key + ']');
