@@ -383,26 +383,36 @@ exports.$pullAll = function $pullAll(obj, path, val){
 function pull(vals){
   return function(val){
     for (var i = 0; i < vals.length; i++) {
-      var matcher = val[i];
+      var matcher = vals[i];
       if ('object' == type(matcher)) {
         // we only are only interested in obj <-> obj comparisons
         if ('object' == type(val)) {
-          var match = true;
-          for (var i in matcher) {
-            if (matcher.hasOwnProperty(i)) {
-              // if a single key doesn't match we move on
-              if (!eql(matcher[i], val[i])) {
-                match = false;
-                break;
+          var match = false;
+
+          if (keys(matcher).length) {
+            for (var i in matcher) {
+              if (matcher.hasOwnProperty(i)) {
+                // we need at least one matching key to pull
+                if (eql(matcher[i], val[i])) {
+                  match = true;
+                } else {
+                  // if a single key doesn't match we move on
+                  match = false;
+                  break;
+                }
               }
             }
+          } else if (!keys(val).length) {
+            // pull `{}` matches [{}]
+            match = true;
           }
+
           if (match) return false;
         } else {
           debug('ignoring pull match against object');
         }
       } else {
-        if (eql(val[i], val)) return false;
+        if (eql(matcher, val)) return false;
       }
     }
     return true;
