@@ -7,8 +7,10 @@ var debug = require('debug')('mongo-query');
 
 try {
   var type = require('type');
+  var keys = require('object').keys;
 } catch(e){
   var type = require('type-component');
+  var keys = require('object-component').keys;
 }
 
 /**
