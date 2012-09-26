@@ -585,25 +585,13 @@ describe('query', function(){
   });
 
   describe('$pullAll', function(){
-    it('should complain about non-array targets', function(){
-      var obj = { hello: ['world'] };
-      expect(function(){
-        query(obj, {}, { $pullAll: { hello: 'world' } });
-      }).to.throwError(/Modifier \$pushAll\/pullAll allowed for arrays only/);
-      expect(obj).to.eql({ hello: 'world' });
-    });
-
     it('should complain about non-array value', function(){
       var obj = { a: [] };
       expect(function(){
         query(obj, {}, { $pullAll: { 'a.1': 'woot' } });
-      }).to.throwError(/Cannot apply \$pull\/\$pullAll modifier to non-array/);
+      }).to.throwError(/Modifier \$pushAll\/pullAll allowed for arrays only/);
       expect(obj).eql({ a: [] });
     });
-  });
-
-  describe('$pullAll', function(){
-
   });
 
 });
