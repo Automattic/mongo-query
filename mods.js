@@ -327,12 +327,15 @@ exports.$pushAll = function $pushAll(obj, path, val){
 exports.$pull = function $pull(obj, path, val){
   obj = parent(obj, path, true);
   var key = path.split('.').pop();
+  var t = type(obj);
 
-  switch (type(obj)) {
+  switch (t) {
     case 'object':
       if (obj.hasOwnProperty(key)) {
         if ('array' == type(obj[key])) {
-          obj[key] = obj[key].filter(pull([val]));
+          return function(){
+            obj[key] = obj[key].filter(pull([val]));
+          };
         } else {
           throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
         }
@@ -340,7 +343,23 @@ exports.$pull = function $pull(obj, path, val){
       break;
 
     case 'array':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          return function(){
+            obj[key] = obj[key].filter(pull([val]));
+          };
+        } else {
+          throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
+        }
+      } else {
+        debug('ignoring pull to non array');
+      }
       break;
+
+    default:
+      if ('undefined' != t) {
+        throw new Error('LEFT_SUBFIELD only supports Object: hello not: ' + t);
+      }
   }
 };
 
