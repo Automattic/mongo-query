@@ -486,7 +486,7 @@ describe('query', function(){
     });
   });
 
-  describe.only('$pull', function(){
+  describe('$pull', function(){
     it('should pull a number', function(){
       var obj = { arr: [1, '1', 2] };
       var ret = query(obj, {}, { $pull: { arr: 1 } });
@@ -532,9 +532,9 @@ describe('query', function(){
           5
         ]
       };
-      query(obj, {}, { $pull: { hello: 'world' } });
+      query(obj, {}, { $pull: { arr: { hello: 'world' } } });
       expect(obj).to.eql({ arr: [{}, { a: 'b' }, 5] });
-      query(obj, {}, { $pull: {} });
+      query(obj, {}, { $pull: { arr: {} } });
       expect(obj).to.eql({ arr: [{ a: 'b' }, 5] });
     });
 
@@ -552,17 +552,35 @@ describe('query', function(){
         ]
       };
       query(obj, {}, { $pull: { 'arr.1': { hello: 'world' } } });
-      expect(obj).to.eql({ 'arr.1': [500, [{}, { a: 'b' }, 5]] });
+      expect(obj).to.eql({ arr: [500, [{}, { a: 'b' }, 5]] });
       query(obj, {}, { $pull: { 'arr.1': {} } });
       expect(obj).to.eql({ arr: [500, [{ a: 'b' }, 5]] });
     });
 
-    it('should complain about non-array value', function(){
+    it('should fail silently when targetting non-array array member', function(){
       var obj = { a: [] };
+      var ret = query(obj, {}, { $pull: { 'a.a': 'test' } });
+      expect(ret).to.eql([]);
+      expect(obj).to.eql({ a: [] });
+    });
+
+    it('should complain about non-array target', function(){
+      var obj = { hello: 'world' };
       expect(function(){
-        query(obj, {}, { $pull: { 'a.1': 'woot' } });
-      }).to.throwError(/Cannot apply \$pull\/\$pullAll modifier to non-array/);
-      expect(obj).eql({ a: [] });
+        query(obj, {}, { $pull: { 'hello.a': 'world' } });
+      }).to.throwError(/LEFT_SUBFIELD only supports Object: hello not:/);
+      expect(obj).to.eql({ hello: 'world' });
+    });
+
+    it('should work transactionally', function(){
+      var obj = { a: ['woot', 'woot'], hello: 'world' };
+      expect(function(){
+        query(obj, {}, {
+          $pull: { 'a': 'woot' },
+          $set: { 'hello.a': 'asdasd' }
+        });
+      }).to.throwError(/only supports object not string/);
+      expect(obj).eql({ a: ['woot', 'woot'], hello: 'world' });
     });
   });
 
