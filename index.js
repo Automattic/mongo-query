@@ -33,14 +33,6 @@ module.exports = exports = query;
 exports.mods = mods;
 
 /**
- * Filter exports.
- */
-
-exports.get = get;
-exports.set = set;
-exports.filter = filter;
-
-/**
  * Execute a query.
  *
  * @param {Object} object to alter
@@ -90,40 +82,4 @@ function query(obj, query, update){
   }
 
   return log;
-}
-
-/**
- * Gets the given key.
- *
- * @param {Object} object to query
- * @param {String} key
- * @api public
- */
-
-function get(obj, key){
-  return filtr.getPathValue(key, obj);
-}
-
-/**
- * Sets the given key.
- *
- * @param {Object} object to query
- * @param {String} key
- * @param {Object} value
- * @api public
- */
-
-function set(obj, key, val){
-  return filtr.setPathValue(key, val, obj);
-}
-
-/**
- * Creates a new filter.
- *
- * @param {Object] query
- * @api private
- */
-
-function filter(obj){
-  return filtr(obj);
 }
