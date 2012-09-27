@@ -3,14 +3,17 @@
  * Module dependencies.
  */
 
-var debug = require('debug')('mongo-query');
+var debug = require('debug')('mongo-query')
+  , type, keys, dot;
 
 try {
-  var type = require('type');
-  var keys = require('object').keys;
+  dot = require('dot');
+  type = require('type');
+  keys = require('object').keys;
 } catch(e){
-  var type = require('type-component');
-  var keys = require('object-component').keys;
+  dot = require('dot-component');
+  type = require('type-component');
+  keys = require('object-component').keys;
 }
 
 /**
@@ -24,7 +27,7 @@ try {
 
 exports.$set = function $set(obj, path, val){
   var key = path.split('.').pop();
-  obj = parent(obj, path, true);
+  obj = dot.parent(obj, path, true);
 
   switch (type(obj)) {
     case 'object':
@@ -58,7 +61,7 @@ exports.$set = function $set(obj, path, val){
 
 exports.$unset = function $unset(obj, path){
   var key = path.split('.').pop();
-  obj = parent(obj, path);
+  obj = dot.parent(obj, path);
 
   switch (type(obj)) {
     case 'array':
@@ -95,7 +98,7 @@ exports.$rename = function $rename(obj, path, newKey){
     throw new Error('$rename target may not be a parent of source');
   }
 
-  var p = parent(obj, path);
+  var p = dot.parent(obj, path);
   var t = type(p);
 
   if ('object' == t) {
@@ -107,7 +110,7 @@ exports.$rename = function $rename(obj, path, newKey){
         delete p[key];
 
         // target does initialize the path
-        var newp = parent(obj, newKey, true);
+        var newp = dot.parent(obj, newKey, true);
 
         // and also fails silently upon type mismatch
         if ('object' == type(newp)) {
@@ -138,7 +141,7 @@ exports.$inc = function $inc(obj, path, inc){
     throw new Error('Modifier $inc allowed for numbers only');
   }
 
-  obj = parent(obj, path, true);
+  obj = dot.parent(obj, path, true);
   var key = path.split('.').pop();
 
   switch (type(obj)) {
@@ -176,7 +179,7 @@ exports.$inc = function $inc(obj, path, inc){
  */
 
 exports.$pop = function $pop(obj, path, val){
-  obj = parent(obj, path);
+  obj = dot.parent(obj, path);
   var key = path.split('.').pop();
 
   // we make sure the array is not just the parent of the main key
@@ -226,7 +229,7 @@ exports.$pop = function $pop(obj, path, val){
  */
 
 exports.$push = function $push(obj, path, val){
-  obj = parent(obj, path, true);
+  obj = dot.parent(obj, path, true);
   var key = path.split('.').pop();
 
   switch (type(obj)) {
@@ -280,7 +283,7 @@ exports.$pushAll = function $pushAll(obj, path, val){
     throw new Error('Modifier $pushAll/pullAll allowed for arrays only');
   }
 
-  obj = parent(obj, path, true);
+  obj = dot.parent(obj, path, true);
   var key = path.split('.').pop();
 
   switch (type(obj)) {
@@ -325,7 +328,7 @@ exports.$pushAll = function $pushAll(obj, path, val){
  */
 
 exports.$pull = function $pull(obj, path, val){
-  obj = parent(obj, path, true);
+  obj = dot.parent(obj, path, true);
   var key = path.split('.').pop();
   var t = type(obj);
 
@@ -372,7 +375,7 @@ exports.$pullAll = function $pullAll(obj, path, val){
     throw new Error('Modifier $pushAll/pullAll allowed for arrays only');
   }
 
-  obj = parent(obj, path, true);
+  obj = dot.parent(obj, path, true);
   var key = path.split('.').pop();
   var t = type(obj);
 
@@ -505,41 +508,6 @@ function eql(matcher, val){
 
     default:
       return matcher === val;
-  }
-}
-
-/**
- * Gets the parent object for a given key (dot notation aware).
- *
- * - If a parent object doesn't exist, it's initialized.
- * - Array index lookup is supported
- *
- * @param {Object} target object
- * @param {String} key
- * @param {Boolean} true if it should initialize the path
- * @api private
- */
-
-function parent(obj, key, init) {
-  if (~key.indexOf('.')) {
-    var pieces = key.split('.');
-    var ret = obj;
-
-    for (var i = 0; i < pieces.length - 1; i++) {
-      // if the key is a number string and parent is an array
-      if (Number(pieces[i]) == pieces[i] && 'array' == type(ret)) {
-        ret = ret[pieces[i]];
-      } else if ('object' == type(ret)) {
-        if (init && !ret.hasOwnProperty(pieces[i])) {
-          ret[pieces[i]] = {};
-        }
-        if (ret) ret = ret[pieces[i]];
-      }
-    }
-
-    return ret;
-  } else {
-    return obj;
   }
 }
 
