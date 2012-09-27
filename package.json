@@ -4,7 +4,8 @@
   "dependencies": {
     "debug": "*",
     "type-component": "*",
-    "object-component": "*"
+    "object-component": "*",
+    "dot-component": "*"
   },
   "devDependencies": {
     "mocha": "*",
@@ -13,8 +14,7 @@
   "component": {
     "scripts": {
       "mongo-query/index.js": "index.js",
-      "mongo-query/mods.js": "mods.js",
-      "mongo-query/filtr.js": "filtr.js"
+      "mongo-query/mods.js": "mods.js"
     }
   }
 }

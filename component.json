@@ -5,7 +5,8 @@
   "dependencies": {
     "component/type": "*",
     "component/object": "*",
-    "visionmedia/debug": "*"
+    "visionmedia/debug": "*",
+    "learnboost/dot": "*"
   },
   "devDependencies": {
     "visionmedia/mocha": "*",
