@@ -371,6 +371,43 @@ exports.$pullAll = function $pullAll(obj, path, val){
   if ('array' != type(val)) {
     throw new Error('Modifier $pushAll/pullAll allowed for arrays only');
   }
+
+  obj = parent(obj, path, true);
+  var key = path.split('.').pop();
+  var t = type(obj);
+
+  switch (t) {
+    case 'object':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          return function(){
+            obj[key] = obj[key].filter(pull(val));
+          };
+        } else {
+          throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
+        }
+      }
+      break;
+
+    case 'array':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          return function(){
+            obj[key] = obj[key].filter(pull(val));
+          };
+        } else {
+          throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
+        }
+      } else {
+        debug('ignoring pull to non array');
+      }
+      break;
+
+    default:
+      if ('undefined' != t) {
+        throw new Error('LEFT_SUBFIELD only supports Object: hello not: ' + t);
+      }
+  }
 };
 
 /**
