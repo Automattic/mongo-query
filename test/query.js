@@ -63,6 +63,26 @@ describe('query', function(){
       }).to.throwError(/only supports object not string/);
       expect(obj).to.eql({ a: 'b', c: 'd' });
     });
+
+    it('should work with positional modifier', function(){
+      var obj = {
+        pets: [
+          { id: 1, name: 'tobi' },
+          { id: 2, name: 'loki' },
+          { id: 3, name: 'jane' }
+        ]
+      };
+
+      var ret = query(obj, { 'pets.id': 2 }, { $set: { 'pets.$.name': 'LOKI' } });
+
+      expect(obj).to.eql({
+        pets: [
+          { id: 1, name: 'tobi' },
+          { id: 2, name: 'LOKI' },
+          { id: 3, name: 'jane' }
+        ]
+      });
+    });
   });
 
   describe('$unset', function(){
