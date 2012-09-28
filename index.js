@@ -3,8 +3,7 @@
  * Module dependencies.
  */
 
-var filtr = require('./filtr')
-  , mods = require('./mods')
+var mods = require('./mods')
   , debug = require('debug')('mongo-query')
   , object, type;
 
@@ -49,7 +48,7 @@ function query(obj, query, update){
   var log = [];
 
   if (object.length(query)) {
-    match = filter(query).test(obj);
+    match = [obj];
   } else {
     if (!object.length(update)) return [];
     match = [obj];
