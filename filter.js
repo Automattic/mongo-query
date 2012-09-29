@@ -36,7 +36,9 @@ function filter(obj, query){
   var ret = {};
 
   for (var i in query) {
-    var par = dot.parent(i);
+    if (!query.hasOwnProperty(i)) continue;
+
+    var par = dot.parent(obj, i);
 
     switch (type(par)) {
       case 'array':
@@ -44,6 +46,7 @@ function filter(obj, query){
         var keys = i.split('.');
         var ret = obj;
         var prefix, search;
+        var target = par;
 
         for (var i = 0; i < keys.length; i++) {
           ret = ret[keys[i]];
@@ -54,6 +57,9 @@ function filter(obj, query){
           }
         }
 
+        // if we already have a subset, narrow it down to that
+        if (ret[prefix]) target = ret[prefix];
+
         // search of subdocuments
         for (var i = 0; i < par.length; i++) {
           if (par[i]) {
@@ -62,11 +68,11 @@ function filter(obj, query){
             if (compare(query[i], val)) {
               if ('array' != type(ret[prefix])) ret[prefix] = [];
               ret[prefix].push(val);
-            } else {
-
             }
           }
         }
+
+        if (!ret[prefix]) return false;
         break;
 
       case 'object':
