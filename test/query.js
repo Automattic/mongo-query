@@ -64,7 +64,7 @@ describe('query', function(){
       expect(obj).to.eql({ a: 'b', c: 'd' });
     });
 
-    it('should work with positional modifier', function(){
+    it('should work with positional operator', function(){
       var obj = {
         pets: [
           { id: 1, name: 'tobi' },
