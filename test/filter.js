@@ -73,6 +73,28 @@ describe('filter', function(){
     });
   });
 
+  describe('simple', function(){
+    it('single key', function(){
+      var obj = { a: 'b', c: 'd' };
+      expect(filter(obj, { a: 'b' })).to.eql({});
+      expect(filter(obj, { a: 'c' })).to.be(false);
+    });
+
+    it('custom operators', function(){
+      var obj = { name: 'tobi', age: 5 };
+      expect(filter(obj, { name: /t/ })).to.eql({});
+      expect(filter(obj, { age: { $gt: 3 } })).to.eql({});
+      expect(filter(obj, { age: { $gt: 10 } })).to.eql(false);
+    });
+
+    it('multiple keys', function(){
+      var obj = { a: 'b', c: 'd' };
+      expect(filter(obj, { a: 'b', c: 'd' })).to.eql({});
+      expect(filter(obj, { a: { $in: ['b', 'c'] }, c: 'd' })).to.eql({});
+      expect(filter(obj, { a: { $in: ['b', 'c'] }, c: false })).to.eql(false);
+    });
+  });
+
   describe('arrays', function(){
     it('simple', function(){
       var ret = filter({
