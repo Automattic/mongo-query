@@ -146,7 +146,10 @@ describe('filter', function(){
       }, { 'ferrets.name': /^t/, 'ferrets.age': { $lt: 8 } });
 
       expect(ret).to.eql({
-        ferrets: [{ name: 'tobi', age: 5 }, { name: 'tobo', age: 4 }]
+        ferrets: [
+          { name: 'tobi', age: 5 },
+          { name: 'tobo', age: 4 }
+        ]
       });
     });
 
@@ -166,7 +169,10 @@ describe('filter', function(){
       }, { 'ferrets.age': { $gte: 5 }, 'people.programmer': true });
 
       expect(ret).to.eql({
-        ferrets: [{ name: 'jane' }],
+        ferrets: [
+          { name: 'tobi', age: 5 },
+          { name: 'jane', age: 8 }
+        ],
         people: [
           { name: 'tj', programmer: true },
           { name: 'marco', programmer: true }
