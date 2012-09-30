@@ -47,6 +47,7 @@ function filter(obj, query){
     var target = obj;
     var prefix, search;
 
+    walk_keys:
     for (var i = 0; i < keys.length; i++) {
       target = target[keys[i]];
 
@@ -60,6 +61,8 @@ function filter(obj, query){
 
           // walk subdocs
           var subset = ret[prefix] || target;
+          var matches = 0;
+
           for (var ii = 0; ii < subset.length; ii++) {
             if (search.length) {
               var q = {};
@@ -67,22 +70,23 @@ function filter(obj, query){
               if ('object' == type(subset[ii])) {
                 debug('attempting subdoc search with query %j', q);
                 if (filter(subset[ii], q)) {
-                  // we ignore the ret value
-                  ret[prefix] = ret[prefix] || [];
+                  // we ignore the ret value of filter
+                  if (!matches) ret[prefix] = [];
                   ret[prefix].push(subset[ii]);
+                  matches++;
                 }
               }
             } else {
               debug('performing simple array item search');
               if (compare(val, subset[ii])) {
-                ret[prefix] = ret[prefix] || [];
+                if (!matches) ret[prefix] = [];
                 ret[prefix].push(subset[ii]);
+                matches++;
               }
             }
           }
-
           // we don't continue the key search
-          return ret;
+          break walk_keys;
 
         case 'undefined':
           // if we can't find the key
