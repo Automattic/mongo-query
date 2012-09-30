@@ -97,7 +97,7 @@ describe('filter', function(){
         }
       }, { 'a.b.c.d': 5 });
 
-      expect(ret).to.eql({ 'a.b.c.d': [
+      expect(ret).to.eql({ 'a.b.c': [
         { d: 5, hello: 'world' },
         { d: 5, tobi: 'ferret' }
       ] });
