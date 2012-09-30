@@ -103,6 +103,24 @@ describe('filter', function(){
       ] });
     });
 
+    it('subdocuments nested', function(){
+      var ret = filter({
+        a: {
+          b: [
+            { name: { first: 'Guillermo', last: 'Rauch' } },
+            { name: { first: 'Guillermo', last: 'Ranch' } }
+          ]
+        }
+      }, { 'a.b.name.first': /^G/ });
+
+      expect(ret).to.eql({
+        'a.b': [
+          { name: { first: 'Guillermo', last: 'Rauch' } },
+          { name: { first: 'Guillermo', last: 'Ranch' } }
+        ]
+      });
+    });
+
     it('query operators', function(){
       var ret = filter({
         ferrets: [
