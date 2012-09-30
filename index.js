@@ -4,6 +4,7 @@
  */
 
 var mods = require('./mods')
+  , filter = require('./filter')
   , debug = require('debug')('mongo-query')
   , object, type;
 
@@ -24,6 +25,12 @@ try {
  */
 
 module.exports = exports = query;
+
+/**
+ * Export filter helper.
+ */
+
+exports.filter = filter;
 
 /**
  * Export modifiers.
