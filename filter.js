@@ -5,6 +5,7 @@
 
 var eql = require('./eql')
   , ops = require('./ops')
+  , debug = require('debug')('mongo-query')
   , keys, type, dot;
 
 try {
