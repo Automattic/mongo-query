@@ -108,7 +108,8 @@ describe('filter', function(){
         a: {
           b: [
             { name: { first: 'Guillermo', last: 'Rauch' } },
-            { name: { first: 'Guillermo', last: 'Ranch' } }
+            { name: { first: 'Guillermo', last: 'Ranch' } },
+            { name: { first: 'Thianh', last: 'Lu' } }
           ]
         }
       }, { 'a.b.name.first': /^G/ });
