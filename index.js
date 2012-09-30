@@ -55,13 +55,10 @@ function query(obj, query, update){
   var log = [];
 
   if (object.length(query)) {
-    match = [obj];
-  } else {
-    if (!object.length(update)) return [];
-    match = [obj];
+    match = filter(obj, query);
   }
 
-  if (match.length) {
+  if (false !== match) {
     var keys = object.keys(update);
     var transactions = [];
 
@@ -69,8 +66,23 @@ function query(obj, query, update){
       if (mods[keys[i]]) {
         debug('found modifier "%s"', keys[i]);
         for (var key in update[keys[i]]) {
-          var fn = mods[keys[i]](obj, key, update[keys[i]][key]);
-          if (fn) transactions.push(fn);
+          var pos = key.indexOf('.$.');
+
+          if (~pos) {
+            var prefix = key.substr(0, pos);
+            var suffix = key.substr(pos + 3);
+
+            if (match[prefix]) {
+              debug('executing "%s" %s on first match within "%s"', key, keys[i], prefix);
+              var fn = mods[keys[i]](match[prefix][0], suffix, update[keys[i]][key]);
+              if (fn) transactions.push(fn);
+            } else {
+              debug('ignoring "%s" %s - no matches within "%s"', key, keys[i], prefix);
+            }
+          } else {
+            var fn = mods[keys[i]](obj, key, update[keys[i]][key]);
+            if (fn) transactions.push(fn);
+          }
         }
       } else {
         debug('skipping unknown modifier "%s"', keys[i]);
