@@ -67,8 +67,7 @@ function filter(obj, query){
               if ('object' == type(subset[ii])) {
                 debug('attempting subdoc search with query %j', q);
                 if (filter(subset[ii], q)) {
-                  // we don't care about the particular keys - only that
-                  // it matches
+                  // we ignore the ret value
                   ret[prefix] = ret[prefix] || [];
                   ret[prefix].push(subset[ii]);
                 }
@@ -81,11 +80,24 @@ function filter(obj, query){
               }
             }
           }
-          break;
+
+          // we don't continue the key search
+          return ret;
 
         case 'undefined':
           // if we can't find the key
           return false;
+
+        case 'object':
+          if (null != keys[i + 1]) {
+            continue;
+          } else if (!compare(val, target)) {
+            return false;
+          }
+          break;
+
+        default:
+          if (!compare(val, target)) return false;
       }
     }
   }
