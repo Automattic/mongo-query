@@ -201,6 +201,15 @@ describe('filter', function(){
         ]
       });
     });
+
+    it('conflicting matches', function(){
+      var ret = filter({
+        a: [{ b: 'c' }],
+        hello: 'world'
+      }, { 'a.b': 'c', hello: 'test' });
+
+      expect(ret).to.be(false);
+    });
   });
 
 });
