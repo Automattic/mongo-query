@@ -6,16 +6,16 @@
 var eql = require('./eql')
   , ops = require('./ops')
   , debug = require('debug')('mongo-query')
-  , keys, type, dot;
+  , object, type, dot;
 
 try {
   dot = require('dot');
   type = require('type');
-  keys = require('object').keys;
+  object = require('object');
 } catch(e){
   dot = require('dot-component');
   type = require('type-component');
-  keys = require('object-component').keys;
+  object = require('object-component');
 }
 
 /**
@@ -118,7 +118,7 @@ function compare(matcher, val){
     return eql(matcher, val);
   }
 
-  var keys = keys(matcher);
+  var keys = object.keys(matcher);
   if ('$' == keys[0][0]) {
     for (var i = 0; i < keys.length; i++) {
       // special case for sub-object matching
