@@ -36,63 +36,57 @@ function filter(obj, query){
   obj = obj || {};
   var ret = {};
 
-  for (var i in query) {
-    if (!query.hasOwnProperty(i)) continue;
+  for (var key in query) {
+    if (!query.hasOwnProperty(key)) continue;
 
-    var par = dot.parent(obj, i);
+    // search value
+    var val = query[key];
 
-    switch (type(par)) {
-      case 'array':
-        // get the prefix for this document
-        var keys = i.split('.');
-        var ret = obj;
-        var prefix, search;
-        var target = par;
+    // split the key into prefix and suffix
+    var keys = key.split('.');
+    var target = obj;
+    var prefix, search;
 
-        for (var i = 0; i < keys.length; i++) {
-          ret = ret[keys[i]];
-          if (ret == par) {
-            prefix = keys.slice(0, i).join('.');
-            search = keys.slice(i + 1).join('.');
-            break;
-          }
-        }
+    for (var i = 0; i < keys.length; i++) {
+      target = target[keys[i]];
 
-        // if we already have a subset, narrow it down to that
-        if (ret[prefix]) target = ret[prefix];
+      switch (type(target)) {
+        case 'array':
+          // if it's an array subdocument search we stop here
+          prefix = keys.slice(0, i + 1).join('.');
+          search = keys.slice(i + 1).join('.');
 
-        // search of subdocuments
-        for (var i = 0; i < par.length; i++) {
-          if (par[i]) {
-            // get the key
-            var val = dot.get(par[i], search);
-            if (compare(query[i], val)) {
-              if ('array' != type(ret[prefix])) ret[prefix] = [];
-              ret[prefix].push(val);
-            }
-          }
-        }
+          debug('searching array "%s"', prefix);
 
-        if (!ret[prefix]) return false;
-        break;
-
-      case 'object':
-        var val = dot.get(obj, i);
-        if ('array' == type(val)) {
-          // perform an array item search
-          for (var i = 0; i < val.length; i++) {
-            if (compare(query[i], val[i])) {
-              break;
+          // walk subdocs
+          var subset = ret[prefix] || target;
+          for (var ii = 0; ii < subset.length; ii++) {
+            if (search.length) {
+              var q = {};
+              q[search] = val;
+              if ('object' == type(subset[ii])) {
+                debug('attempting subdoc search with query %j', q);
+                if (filter(subset[ii], q)) {
+                  // we don't care about the particular keys - only that
+                  // it matches
+                  ret[prefix] = ret[prefix] || [];
+                  ret[prefix].push(subset[ii]);
+                }
+              }
+            } else {
+              debug('performing simple array item search');
+              if (compare(val, subset[ii])) {
+                ret[prefix] = ret[prefix] || [];
+                ret[prefix].push(subset[ii]);
+              }
             }
           }
           break;
-        } else if(!compare(query[i], val)) {
-          return false;
-        }
-        break;
 
-      case 'undefined':
-        return false;
+        case 'undefined':
+          // if we can't find the key
+          return false;
+      }
     }
   }
 
