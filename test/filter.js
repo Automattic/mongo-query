@@ -170,7 +170,8 @@ describe('filter', function(){
       expect(ret).to.eql({
         ferrets: [
           { name: 'tobi', age: 5 },
-          { name: 'tobo', age: 4 }
+          { name: 'tobo', age: 4 },
+          { name: 'tomas', age: 10 }
         ]
       });
     });
