@@ -176,6 +176,29 @@ describe('filter', function(){
       });
     });
 
+    it('$elemMatch', function(){
+      var ret = filter({
+        ferrets: [
+          { name: 'tobi', age: 5 },
+          { name: 'tobo', age: 4 },
+          { name: 'tomas', age: 10 }
+        ]
+      }, {
+        ferrets: {
+          $elemMatch: {
+            name: /to/,
+            age: 4
+          }
+        }
+      });
+
+      expect(ret).to.eql({
+        ferrets: [
+          { name: 'tobo', age: 4 }
+        ]
+      });
+    });
+
     it('multiple matches', function(){
       var ret = filter({
         ferrets: [
