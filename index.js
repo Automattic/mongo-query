@@ -6,7 +6,7 @@
 var mods = require('./mods')
   , filter = require('./filter')
   , debug = require('debug')('mongo-query')
-  , object, type;
+  , object, type, dot;
 
 /**
  * Dual require for components.
@@ -15,9 +15,11 @@ var mods = require('./mods')
 try {
   type = require('type');
   object = require('object');
+  dot = require('dot');
 } catch(e){
   type = require('type-component');
   object = require('object-component');
+  dot = require('dot-component');
 };
 
 /**
@@ -75,13 +77,24 @@ function query(obj, query, update){
             if (match[prefix]) {
               debug('executing "%s" %s on first match within "%s"', key, keys[i], prefix);
               var fn = mods[keys[i]](match[prefix][0], suffix, update[keys[i]][key]);
-              if (fn) transactions.push(fn);
+              if (fn) {
+                // produce a key name replacing $ with the actual index
+                // TODO: this is unnecessarily expensive
+                var index = dot.get(obj, prefix).indexOf(match[prefix][0]);
+                fn.key = prefix + '.' + index + '.' + suffix;
+                fn.op = keys[i];
+                transactions.push(fn);
+              }
             } else {
               debug('ignoring "%s" %s - no matches within "%s"', key, keys[i], prefix);
             }
           } else {
             var fn = mods[keys[i]](obj, key, update[keys[i]][key]);
-            if (fn) transactions.push(fn);
+            if (fn) {
+              fn.key = key;
+              fn.op = keys[i];
+              transactions.push(fn);
+            }
           }
         }
       } else {
@@ -92,7 +105,9 @@ function query(obj, query, update){
     if (transactions.length) {
       // if we got here error free we process all transactions
       for (var i = 0; i < transactions.length; i++) {
-        transactions[i]();
+        var fn = transactions[i];
+        var val = fn();
+        log.push({ op: fn.op, key: fn.key, value: val });
       }
     }
   } else {
