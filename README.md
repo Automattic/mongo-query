@@ -66,8 +66,6 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
   - `key`: the key that was affected. If the positional operator was used,
     the key is rewritten with dot notation (eg: `comments.3.date`).
   - `type`: the type of operation that was performed
-  - `before`: value of the key before it was changed (cloned)
-  - `after`: new value of the key
 
   Depending on the type of operation they can contain extra fields.
 
