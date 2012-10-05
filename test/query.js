@@ -76,6 +76,7 @@ describe('query', function(){
       };
 
       var ret = query(obj, { 'pets.id': 2 }, { $set: { 'pets.$.name': 'LOKI' } });
+      expect(ret).to.eql([{ op: '$set', key: 'pets.1.name', value: 'LOKI' }]);
 
       expect(obj).to.eql({
         pets: [
