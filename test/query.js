@@ -150,6 +150,7 @@ describe('query', function(){
       var obj = { a: 'b' };
       var ret = query(obj, {}, { $rename: { a: 'b' } });
       expect(obj).to.eql({ b: 'b' });
+      expect(ret).to.eql([{ op: '$rename', key: 'a', value: 'b' }]);
     });
 
     it('should rename nested keys', function(){
