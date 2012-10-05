@@ -531,9 +531,16 @@ describe('query', function(){
           5
         ]
       };
-      query(obj, {}, { $pull: { arr: { hello: 'world' } } });
+
+      var ret = query(obj, {}, { $pull: { arr: { hello: 'world' } } });
       expect(obj).to.eql({ arr: [{}, { a: 'b' }, 5] });
-      query(obj, {}, { $pull: { arr: {} } });
+
+      expect(ret).to.eql([{ op: '$pull', key: 'arr', value: [
+        { hello: 'world' },
+        { hello: 'world', extra: 'sth' }
+      ]}]);
+
+      var ret = query(obj, {}, { $pull: { arr: {} } });
       expect(obj).to.eql({ arr: [{ a: 'b' }, 5] });
     });
 
