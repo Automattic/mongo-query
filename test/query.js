@@ -9,12 +9,14 @@ describe('query', function(){
       var obj = { a: 'b' };
       var ret = query(obj, {}, { $set: { a: 'c' } });
       expect(obj).to.eql({ a: 'c' });
+      expect(ret).to.eql([{ op: '$set', key: 'a', value: 'c' }]);
     });
 
     it('should $set nested', function(){
       var obj = { a: { b: 'c' } };
       var ret = query(obj, {}, { $set: { 'a.b': 'e' } });
       expect(obj).to.eql({ a: { b: 'e' } });
+      expect(ret).to.eql([{ op: '$set', key: 'a.b', value: 'e' }]);
     });
 
     it('should initialize nested', function(){
@@ -82,6 +84,11 @@ describe('query', function(){
           { id: 3, name: 'jane' }
         ]
       });
+    });
+
+    it('should not log noops', function(){
+      var obj = { a: 'b' };
+      expect(query(obj, {}, { $set: { a: 'b' } })).to.eql([]);
     });
   });
 
