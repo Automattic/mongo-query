@@ -32,15 +32,22 @@ exports.$set = function $set(obj, path, val){
 
   switch (type(obj)) {
     case 'object':
-      return function(){
-        obj[key] = val;
-      };
+      if (!eql(obj[key], val)) {
+        return function(){
+          obj[key] = val;
+          return val;
+        };
+      }
+      break;
 
     case 'array':
       if (numeric(key)) {
-        return function(){
-          obj[key] = val;
-        };
+        if (!eql(obj[key], val)) {
+          return function(){
+            obj[key] = val;
+            return val;
+          };
+        }
       } else {
         throw new Error('can\'t append to array using string field name [' + key + ']');
       }
@@ -119,6 +126,9 @@ exports.$rename = function $rename(obj, path, newKey){
         } else {
           debug('invalid $rename target path type');
         }
+
+        // returns the name of the new key
+        return newKey;
       };
     } else {
       debug('ignoring rename from inexisting source');
@@ -155,10 +165,12 @@ exports.$inc = function $inc(obj, path, inc){
 
         return function(){
           obj[key] += inc;
+          return inc;
         };
       } else if('object' == type(obj) || numeric(key)){
         return function(){
           obj[key] = inc;
+          return inc;
         };
       } else {
         throw new Error('can\'t append to array using string field name [' + key + ']');
@@ -193,10 +205,10 @@ exports.$pop = function $pop(obj, path, val){
             if (obj[key].length) {
               return function(){
                 if (-1 == val) {
-                  obj[key].shift();
+                  return obj[key].shift();
                 } else {
                   // mongodb allows any value to pop
-                  obj[key].pop();
+                  return obj[key].pop();
                 }
               };
             }
@@ -239,6 +251,7 @@ exports.$push = function $push(obj, path, val){
         if ('array' == type(obj[key])) {
           return function(){
             obj[key].push(val);
+            return val;
           };
         } else {
           throw new Error('Cannot apply $push/$pushAll modifier to non-array');
@@ -246,6 +259,7 @@ exports.$push = function $push(obj, path, val){
       } else {
         return function(){
           obj[key] = [val];
+          return val;
         };
       }
       break;
@@ -255,6 +269,7 @@ exports.$push = function $push(obj, path, val){
         if ('array' == type(obj[key])) {
           return function(){
             obj[key].push(val);
+            return val;
           };
         } else {
           throw new Error('Cannot apply $push/$pushAll modifier to non-array');
@@ -262,6 +277,7 @@ exports.$push = function $push(obj, path, val){
       } else if (numeric(key)) {
         return function(){
           obj[key] = [val];
+          return val;
         };
       } else {
         throw new Error('can\'t append to array using string field name [' + key + ']');
@@ -293,6 +309,7 @@ exports.$pushAll = function $pushAll(obj, path, val){
         if ('array' == type(obj[key])) {
           return function(){
             obj[key].push.apply(obj[key], val);
+            return val;
           };
         } else {
           throw new Error('Cannot apply $push/$pushAll modifier to non-array');
@@ -300,6 +317,7 @@ exports.$pushAll = function $pushAll(obj, path, val){
       } else {
         return function(){
           obj[key] = val;
+          return val;
         };
       }
       break;
@@ -309,6 +327,7 @@ exports.$pushAll = function $pushAll(obj, path, val){
         if ('array' == type(obj[key])) {
           return function(){
             obj[key].push.apply(obj[key], val);
+            return val;
           };
         } else {
           throw new Error('Cannot apply $push/$pushAll modifier to non-array');
@@ -316,6 +335,7 @@ exports.$pushAll = function $pushAll(obj, path, val){
       } else if (numeric(key)) {
         return function(){
           obj[key] = val;
+          return val;
         };
       } else {
         throw new Error('can\'t append to array using string field name [' + key + ']');
@@ -337,9 +357,14 @@ exports.$pull = function $pull(obj, path, val){
     case 'object':
       if (obj.hasOwnProperty(key)) {
         if ('array' == type(obj[key])) {
-          return function(){
-            obj[key] = obj[key].filter(pull([val]));
-          };
+          var pulled = [];
+          var filtered = obj[key].filter(pull([val], pulled));
+          if (pulled.length) {
+            return function(){
+              obj[key] = filtered;
+              return pulled;
+            };
+          }
         } else {
           throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
         }
@@ -349,9 +374,14 @@ exports.$pull = function $pull(obj, path, val){
     case 'array':
       if (obj.hasOwnProperty(key)) {
         if ('array' == type(obj[key])) {
-          return function(){
-            obj[key] = obj[key].filter(pull([val]));
-          };
+          var pulled = [];
+          var filtered = obj[key].filter(pull([val], pulled));
+          if (pulled.length) {
+            return function(){
+              obj[key] = filtered;
+              return pulled;
+            };
+          }
         } else {
           throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
         }
@@ -384,9 +414,13 @@ exports.$pullAll = function $pullAll(obj, path, val){
     case 'object':
       if (obj.hasOwnProperty(key)) {
         if ('array' == type(obj[key])) {
-          return function(){
-            obj[key] = obj[key].filter(pull(val));
-          };
+          var pulled = [];
+          var filtered = obj[key].filter(pull(val, pulled));
+          if (pulled.length) {
+            return function(){
+              obj[key] = filtered;
+            };
+          }
         } else {
           throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
         }
@@ -396,9 +430,13 @@ exports.$pullAll = function $pullAll(obj, path, val){
     case 'array':
       if (obj.hasOwnProperty(key)) {
         if ('array' == type(obj[key])) {
-          return function(){
-            obj[key] = obj[key].filter(pull(val));
-          };
+          var pulled = [];
+          var filtered = obj[key].filter(pull(val, pulled));
+          if (pulled.length) {
+            return function(){
+              obj[key] = filtered;
+            };
+          }
         } else {
           throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
         }
@@ -415,13 +453,14 @@ exports.$pullAll = function $pullAll(obj, path, val){
 };
 
 /**
- * Pull helper.
+ * Array#filter function generator for `$pull`/`$pullAll` operations.
  *
  * @param {Array} array of values to match
+ * @param {Array} array to populate with results
  * @return {Function} that you can .filter an array with
  */
 
-function pull(vals){
+function pull(vals, pulled){
   return function(val){
     for (var i = 0; i < vals.length; i++) {
       var matcher = vals[i];
@@ -448,12 +487,18 @@ function pull(vals){
             match = true;
           }
 
-          if (match) return false;
+          if (match) {
+            pulled.push(val);
+            return false;
+          }
         } else {
           debug('ignoring pull match against object');
         }
       } else {
-        if (eql(matcher, val)) return false;
+        if (eql(matcher, val)) {
+          pulled.push(val);
+          return false;
+        }
       }
     }
     return true;
