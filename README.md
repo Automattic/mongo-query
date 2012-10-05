@@ -65,7 +65,7 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
   All change objects contain:
   - `key`: the key that was affected. If the positional operator was used,
     the key is rewritten with dot notation (eg: `comments.3.date`).
-  - `type`: the type of operation that was performed
+  - `op`: the type of operation that was performed
 
   Depending on the type of operation they can contain extra fields.
 
@@ -96,7 +96,7 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
 
 #### $pull
 
-  - `value` value that was pulled
+  - `value` array of values that were pulled
 
 #### $pullAll
 
