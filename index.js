@@ -43,15 +43,23 @@ exports.mods = mods;
 /**
  * Execute a query.
  *
+ * Options:
+ *  - `strict` only modify if query matches
+ *
  * @param {Object} object to alter
  * @param {Object} query to filter modifications by
  * @param {Object} update object
+ * @param {Object} options
  */
 
-function query(obj, query, update){
+function query(obj, query, update, opts){
   obj = obj || {};
+  opts = opts || {};
   query = query || {};
   update = update || {};
+
+  // strict mode
+  var strict = !!opts.strict;
 
   var match;
   var log = [];
@@ -60,7 +68,7 @@ function query(obj, query, update){
     match = filter(obj, query);
   }
 
-  if (false !== match) {
+  if (!strict || false !== match) {
     var keys = object.keys(update);
     var transactions = [];
 
