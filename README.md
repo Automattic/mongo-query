@@ -105,3 +105,7 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
 #### $unset
 
   - `value` (`undefined`)
+
+#### $addToSet
+
+  - `value` array of values that were added
