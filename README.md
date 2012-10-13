@@ -34,11 +34,13 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
 
 ## API
 
-### query(obj, filter, modifier)
+### query(obj, filter, modifier, opts)
 
-  Executes the `modifier` on `obj` provided they match `filter`.
-  Returns an array of change objects (see below). If the modifier does
+  - Executes the `modifier` on `obj` provided they match `filter`.
+  - Returns an array of change objects (see below). If the modifier does
   not alter the object the array will be empty.
+  - Options:
+    - `strict` if true, only modifies if `filter` has a match (`false`).
 
 ### query.filter(query)
 
