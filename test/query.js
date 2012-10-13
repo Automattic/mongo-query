@@ -713,4 +713,20 @@ describe('query', function(){
     });
   });
 
+  describe('$addToSet', function(){
+    it('should add to set', function(){
+      var obj = { a: ['a', 'b'] };
+      query(obj, {}, { $addToSet: { a: 'c' } });
+      expect(obj).to.eql({ a: ['a', 'b', 'c'] });
+      query(obj, {}, { $addToSet: { a: 'c' } });
+      expect(obj).to.eql({ a: ['a', 'b', 'c'] });
+      query(obj, {}, { $addToSet: { a: { $each: ['a', 'b'] } } });
+      expect(obj).to.eql({ a: ['a', 'b', 'c'] });
+      query(obj, {}, { $addToSet: { a: { $each: ['d', 'e'] } } });
+      expect(obj).to.eql({ a: ['a', 'b', 'c', 'd', 'e'] });
+    });
+
+    // TODO: missing tests (see `$push`)
+  });
+
 });

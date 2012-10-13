@@ -453,6 +453,97 @@ exports.$pullAll = function $pullAll(obj, path, val){
 };
 
 /**
+ * Performs a `$addToSet`.
+ *
+ * @param {Object} object to modify
+ * @param {String} path to alter
+ * @param {Object} value to push
+ * @param {Boolean} internal, true if recursing
+ * @return {Function} transaction (unless noop)
+ */
+
+exports.$addToSet = function $addToSet(obj, path, val, recursing){
+  if (!recursing && 'array' == type(val.$each)) {
+    var fns = [];
+    for (var i = 0, l = val.$each.length; i < l; i++) {
+      var fn = $addToSet(obj, path, val.$each[i], true);
+      if (fn) fns.push(fn);
+    }
+    if (fns.length) {
+      return function(){
+        var values = [];
+        for (var i = 0; i < fns.length; i++) values.push(fns[i]());
+        return values;
+      };
+    } else {
+      return;
+    }
+  }
+
+  obj = dot.parent(obj, path, true);
+  var key = path.split('.').pop();
+
+  switch (type(obj)) {
+    case 'object':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          if (!has(obj[key], val)) {
+            return function(){
+              obj[key].push(val);
+              return val;
+            };
+          }
+        } else {
+          throw new Error('Cannot apply $addToSet modifier to non-array');
+        }
+      } else {
+        return function(){
+          obj[key] = [val];
+          return val;
+        };
+      }
+      break;
+
+    case 'array':
+      if (obj.hasOwnProperty(key)) {
+        if ('array' == type(obj[key])) {
+          if (!has(obj[key], val)) {
+            return function(){
+              obj[key].push(val);
+              return val;
+            };
+          }
+        } else {
+          throw new Error('Cannot apply $addToSet modifier to non-array');
+        }
+      } else if (numeric(key)) {
+        return function(){
+          obj[key] = [val];
+          return val;
+        };
+      } else {
+        throw new Error('can\'t append to array using string field name [' + key + ']');
+      }
+      break;
+  }
+};
+
+/**
+ * Helper for determining if an array has the given value.
+ *
+ * @param {Array} array
+ * @param {Object} value to check
+ * @return {Boolean}
+ */
+
+function has(array, val){
+  for (var i = 0, l = array.length; i < l; i++) {
+    if (eql(val, array[i])) return true;
+  }
+  return false;
+}
+
+/**
  * Array#filter function generator for `$pull`/`$pullAll` operations.
  *
  * @param {Array} array of values to match
