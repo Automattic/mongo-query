@@ -14,7 +14,10 @@
   "component": {
     "scripts": {
       "mongo-query/index.js": "index.js",
-      "mongo-query/mods.js": "mods.js"
+      "mongo-query/mods.js": "mods.js",
+      "mongo-query/eql.js": "eql.js",
+      "mongo-query/filter.js": "filter.js",
+      "mongo-query/filter.js": "ops.js"
     }
   }
 }
