@@ -1,4 +1,10 @@
 
+0.3.3 / 2012-10-15
+==================
+
+  * package: fixed `ops.js` file declaration
+  * *: replaced `object-component-2`
+
 0.3.2 / 2012-10-14
 ==================
 
