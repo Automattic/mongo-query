@@ -4,7 +4,7 @@
   "dependencies": {
     "debug": "*",
     "type-component": "*",
-    "object-component-2": "*",
+    "object-component": "0.0.3",
     "dot-component": "*"
   },
   "devDependencies": {

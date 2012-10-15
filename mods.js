@@ -14,7 +14,7 @@ try {
 } catch(e){
   dot = require('dot-component');
   type = require('type-component');
-  keys = require('object-component-2').keys;
+  keys = require('object-component').keys;
 }
 
 /**
