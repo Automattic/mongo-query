@@ -53,14 +53,14 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
 ### query.get(obj, key)
 
   Gets the `key` from the given `obj`, which can use [dot
-  notation](http://www.mongodb.org/display/DOCS/Dot+Notation+(Reaching+into+Objects)).
+  notation](http://www.mongodb.org/display/DOCS/Dot+Notation+\(Reaching+into+Objects\)).
 
   Example: `query.get(obj, 'some.key')`.
 
 ### query.set(obj, key, val)
 
   Sets the `key` on `obj` with the given `val`. Key can use [dot
-  notation](http://www.mongodb.org/display/DOCS/Dot+Notation+(Reaching+into+Objects)).
+  notation](http://www.mongodb.org/display/DOCS/Dot+Notation+\(Reaching+into+Objects\)).
 
 ### change
 
