@@ -18,9 +18,9 @@ try {
   dot = require('dot');
 } catch(e){
   type = require('type-component');
-  object = require('object-component');
+  object = require('object-component-2');
   dot = require('dot-component');
-};
+}
 
 /**
  * Module exports.

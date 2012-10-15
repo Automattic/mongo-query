@@ -15,7 +15,7 @@ try {
 } catch(e){
   dot = require('dot-component');
   type = require('type-component');
-  object = require('object-component');
+  object = require('object-component-2');
 }
 
 /**
