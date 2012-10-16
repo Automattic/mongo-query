@@ -71,6 +71,13 @@ describe('filter', function(){
       expect(ops.$regex('[0-9]', 'testing')).to.be(false);
       expect(ops.$regex('[0-9]', 't3sting')).to.be(true);
     });
+
+    it('size', function(){
+      expect(ops.$size(1, [1])).to.be(true);
+      expect(ops.$size(3, [1,2,3])).to.be(true);
+      expect(ops.$size(0, [1])).to.be(false);
+      expect(ops.$size(0, [])).to.be(true);
+    });
   });
 
   describe('simple', function(){
@@ -147,11 +154,11 @@ describe('filter', function(){
     it('query operators', function(){
       var ret = filter({
         ferrets: [
-          { name: 'tobi' },
-          { name: 'loki' },
+          { name: 'tobi', likes: [] },
+          { name: 'loki', likes: [] },
           { name: 'jane', likes: ['food'] }
         ]
-      }, { 'ferrets.likes': { $exists: true } });
+      }, { 'ferrets.likes': { $size: 1 } });
 
       expect(ret).to.eql({
         ferrets: [{ name: 'jane', likes: ['food'] }]
