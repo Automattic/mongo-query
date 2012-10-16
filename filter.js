@@ -60,6 +60,11 @@ function filter(obj, query){
 
           debug('searching array "%s"', prefix);
 
+          // we special case operators that don't walk the array
+          if (val.$size && !search.length) {
+            return compare(val, target);
+          }
+
           // walk subdocs
           var subset = ret[prefix] || target;
 
