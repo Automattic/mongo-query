@@ -93,3 +93,11 @@ exports.$in = function $in(matcher, val){
 exports.$nin = function $nin(matcher, val){
   return !exports.$in(matcher, val);
 };
+
+/**
+ * @size: array length
+ */
+
+exports.$size = function(matcher, val){
+  return Array.isArray(val) && matcher == val.length;
+};
