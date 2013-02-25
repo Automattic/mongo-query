@@ -505,6 +505,13 @@ describe('query', function(){
       expect(obj).to.eql({ arr: [1, 2, 3] });
     });
 
+    it('should operate on the existing array instead of a new one', function(){
+      var obj = { arr: ["aaa", "bbb"] };
+      var ref = obj.arr;
+      query(obj, {}, { $pull: { arr: "bbb" } });
+      expect(ref).to.eql(["aaa"]);
+    });
+
     it('should pull arrays based on exact match', function(){
       var obj = { arr: [ [{ 1: 2, 3: 4}], [true] ] };
 
