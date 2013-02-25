@@ -358,10 +358,10 @@ exports.$pull = function $pull(obj, path, val){
       if (obj.hasOwnProperty(key)) {
         if ('array' == type(obj[key])) {
           var pulled = [];
-          var filtered = obj[key].filter(pull([val], pulled));
+          var splice = pull(obj[key], [val], pulled);
           if (pulled.length) {
             return function(){
-              obj[key] = filtered;
+              splice();
               return pulled;
             };
           }
@@ -375,10 +375,10 @@ exports.$pull = function $pull(obj, path, val){
       if (obj.hasOwnProperty(key)) {
         if ('array' == type(obj[key])) {
           var pulled = [];
-          var filtered = obj[key].filter(pull([val], pulled));
+          var splice = pull(obj[key], [val], pulled);
           if (pulled.length) {
             return function(){
-              obj[key] = filtered;
+              splice();
               return pulled;
             };
           }
@@ -415,11 +415,9 @@ exports.$pullAll = function $pullAll(obj, path, val){
       if (obj.hasOwnProperty(key)) {
         if ('array' == type(obj[key])) {
           var pulled = [];
-          var filtered = obj[key].filter(pull(val, pulled));
+          var splice = pull(obj[key], val, pulled);
           if (pulled.length) {
-            return function(){
-              obj[key] = filtered;
-            };
+            return splice;
           }
         } else {
           throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
@@ -431,11 +429,9 @@ exports.$pullAll = function $pullAll(obj, path, val){
       if (obj.hasOwnProperty(key)) {
         if ('array' == type(obj[key])) {
           var pulled = [];
-          var filtered = obj[key].filter(pull(val, pulled));
+          var splice = pull(obj[key], val, pulled);
           if (pulled.length) {
-            return function(){
-              obj[key] = filtered;
-            };
+            return splice;
           }
         } else {
           throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
@@ -548,11 +544,15 @@ function has(array, val){
  *
  * @param {Array} array of values to match
  * @param {Array} array to populate with results
- * @return {Function} that you can .filter an array with
+ * @return {Function} that splices the array
  */
 
-function pull(vals, pulled){
-  return function(val){
+function pull(arr, vals, pulled){
+  var indexes = [];
+
+  for (var a = 0; a < arr.length; a++) {
+    var val = arr[a];
+
     for (var i = 0; i < vals.length; i++) {
       var matcher = vals[i];
       if ('object' == type(matcher)) {
@@ -579,20 +579,28 @@ function pull(vals, pulled){
           }
 
           if (match) {
+            indexes.push(a);
             pulled.push(val);
-            return false;
+            continue;
           }
         } else {
           debug('ignoring pull match against object');
         }
       } else {
         if (eql(matcher, val)) {
+          indexes.push(a);
           pulled.push(val);
-          return false;
+          continue;
         }
       }
     }
-    return true;
+  }
+
+  return function(){
+    for (var i = 0; i < indexes.length; i++) {
+      var index = indexes[i];
+      arr.splice(index - i, 1);
+    }
   };
 }
 
