@@ -610,12 +610,14 @@ describe('query', function(){
     it('should pull a number', function(){
       var obj = { arr: [1, '1', 2] };
       var ret = query(obj, {}, { $pullAll: { arr: [1, 2] } });
+      expect(ret[0].value).to.eql([1, 2]);
       expect(obj).to.eql({ arr: ['1'] });
     });
 
     it('should pull multiple values', function(){
       var obj = { arr: [1, '1', 2, 1, 1, 1] };
       var ret = query(obj, {}, { $pullAll: { arr: [1, '1'] } });
+      expect(ret[0].value).to.eql([1, '1', 1, 1, 1]);
       expect(obj).to.eql({ arr: [2] });
     });
 
