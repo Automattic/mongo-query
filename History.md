@@ -1,4 +1,10 @@
 
+0.4.2 / 2013-04-02
+==================
+
+  * mods: fix `$pullAll` return value
+  * test: added tests for `pullAll` `value` log entries
+
 0.4.1 / 2013-02-24
 ==================
 
