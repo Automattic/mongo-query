@@ -417,7 +417,10 @@ exports.$pullAll = function $pullAll(obj, path, val){
           var pulled = [];
           var splice = pull(obj[key], val, pulled);
           if (pulled.length) {
-            return splice;
+            return function(){
+              splice();
+              return pulled;
+            };
           }
         } else {
           throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
@@ -431,7 +434,10 @@ exports.$pullAll = function $pullAll(obj, path, val){
           var pulled = [];
           var splice = pull(obj[key], val, pulled);
           if (pulled.length) {
-            return splice;
+            return function(){
+              splice();
+              return pulled;
+            };
           }
         } else {
           throw new Error('Cannot apply $pull/$pullAll modifier to non-array');
