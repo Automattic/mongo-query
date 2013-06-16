@@ -3,8 +3,8 @@
  * Module dependencies.
  */
 
-var eql = require('./eql')
-  , type;
+var eql = require('mongo-eql');
+var type;
 
 try {
   type = require('type');

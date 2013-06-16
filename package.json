@@ -4,6 +4,7 @@
   "dependencies": {
     "debug": "*",
     "type-component": "*",
+    "mongo-eql": "git+ssh://git@github.com:LearnBoost/mongo-eql.git#0.0.1",
     "object-component": "0.0.3",
     "dot-component": "*"
   },
@@ -15,7 +16,6 @@
     "scripts": {
       "mongo-query/index.js": "index.js",
       "mongo-query/mods.js": "mods.js",
-      "mongo-query/eql.js": "eql.js",
       "mongo-query/filter.js": "filter.js",
       "mongo-query/ops.js": "ops.js"
     }

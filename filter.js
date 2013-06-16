@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-var eql = require('./eql')
-  , ops = require('./ops')
-  , debug = require('debug')('mongo-query')
-  , object, type, dot;
+var eql = require('mongo-eql');
+var ops = require('./ops');
+var debug = require('debug')('mongo-query');
+var object, type, dot;
 
 try {
   dot = require('dot');
