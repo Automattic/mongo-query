@@ -6,8 +6,8 @@
     "component/type": "*",
     "component/object": "*",
     "visionmedia/debug": "*",
-    "learnboost/dot": "*",
-    "learnboost/mongo-eql": "*"
+    "cloudup/dot": "*",
+    "cloudup/mongo-eql": "*"
   },
   "devDependencies": {
     "visionmedia/mocha": "*",
