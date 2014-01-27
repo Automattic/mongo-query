@@ -3,10 +3,9 @@
  * Module dependencies.
  */
 
-var mods = require('./mods')
-var filter = require('./filter')
-var debug = require('debug')('mongo-query')
-var object, type, dot;
+var mods = require('./mods');
+var filter = require('./filter');
+var debug = require('debug')('mongo-query');
 var type = require('type-component');
 var object = require('object-component');
 var dot = require('dot-component');

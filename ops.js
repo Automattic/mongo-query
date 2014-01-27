@@ -4,13 +4,7 @@
  */
 
 var eql = require('mongo-eql');
-var type;
-
-try {
-  type = require('type');
-} catch(e){
-  type = require('type-component');
-}
+var type = require('type-component');
 
 /**
  * $ne: not equal.
