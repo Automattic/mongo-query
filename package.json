@@ -1,6 +1,6 @@
 {
   "name": "mongo-query",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "dependencies": {
     "debug": "*",
     "type-component": "0.0.1",
