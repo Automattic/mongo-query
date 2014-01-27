@@ -1,4 +1,10 @@
 
+0.5.0 / 2014-01-27
+==================
+
+ * fix require madness
+ * use new `mongo-eql` component
+
 0.4.2 / 2013-04-02
 ==================
 
