@@ -3,10 +3,10 @@
   "version": "0.5.0",
   "dependencies": {
     "debug": "*",
-    "type-component": "*",
+    "type-component": "0.0.1",
     "mongo-eql": "0.1.0",
     "object-component": "0.0.3",
-    "dot-component": "*"
+    "dot-component": "0.1.1"
   },
   "devDependencies": {
     "mocha": "*",
