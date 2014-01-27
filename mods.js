@@ -5,17 +5,9 @@
 
 var eql = require('mongo-eql');
 var debug = require('debug')('mongo-query');
-var type, keys, dot;
-
-try {
-  dot = require('dot');
-  type = require('type');
-  keys = require('object').keys;
-} catch(e){
-  dot = require('dot-component');
-  type = require('type-component');
-  keys = require('object-component').keys;
-}
+var dot = require('dot-component');
+var type = require('type-component');
+var keys = require('object-component').keys;
 
 /**
  * Performs a `$set`.

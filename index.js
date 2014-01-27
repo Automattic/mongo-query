@@ -4,23 +4,12 @@
  */
 
 var mods = require('./mods')
-  , filter = require('./filter')
-  , debug = require('debug')('mongo-query')
-  , object, type, dot;
-
-/**
- * Dual require for components.
- */
-
-try {
-  type = require('type');
-  object = require('object');
-  dot = require('dot');
-} catch(e){
-  type = require('type-component');
-  object = require('object-component');
-  dot = require('dot-component');
-}
+var filter = require('./filter')
+var debug = require('debug')('mongo-query')
+var object, type, dot;
+var type = require('type-component');
+var object = require('object-component');
+var dot = require('dot-component');
 
 /**
  * Module exports.
@@ -119,7 +108,7 @@ function query(obj, query, update, opts){
       }
     }
   } else {
-    debug("no matches for query %j", query);
+    debug('no matches for query %j', query);
   }
 
   return log;
