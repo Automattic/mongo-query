@@ -19,7 +19,7 @@ exports.$ne = function $ne(matcher, val){
  */
 
 exports.$gt = function $gt(matcher, val){
-  return val > matcher;
+  return type(matcher) === 'number' && val > matcher;
 };
 
 /**
@@ -27,7 +27,7 @@ exports.$gt = function $gt(matcher, val){
  */
 
 exports.$gte = function $gte(matcher, val){
-  return val >= matcher;
+  return type(matcher) === 'number' && val >= matcher;
 };
 
 /**
@@ -35,7 +35,7 @@ exports.$gte = function $gte(matcher, val){
  */
 
 exports.$lt = function $lt(matcher, val){
-  return val < matcher;
+  return type(matcher) === 'number' && val < matcher;
 };
 
 /**
@@ -43,7 +43,7 @@ exports.$lt = function $lt(matcher, val){
  */
 
 exports.$lte = function $lte(matcher, val){
-  return val <= matcher;
+  return type(matcher) === 'number' && val <= matcher;
 };
 
 /**

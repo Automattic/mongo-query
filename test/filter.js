@@ -24,22 +24,26 @@ describe('filter', function(){
     it('gt', function(){
       expect(ops.$gt(4, 5)).to.be(true);
       expect(ops.$gt(4, 4)).to.be(false);
+      expect(ops.$gt(false, 4)).to.be(false);
     });
 
     it('gte', function(){
       expect(ops.$gte(4, 5)).to.be(true);
       expect(ops.$gte(4, 4)).to.be(true);
       expect(ops.$gte(5, 4)).to.be(false);
+      expect(ops.$gte(false, 4)).to.be(false);
     });
 
     it('lt', function(){
       expect(ops.$gt(4, 5)).to.be(true);
       expect(ops.$gt(4, 4)).to.be(false);
+      expect(ops.$gt(false, 4)).to.be(false);
     });
 
     it('lte', function(){
-      expect(ops.$gt(4, 5)).to.be(true);
-      expect(ops.$gt(4, 4)).to.be(false);
+      expect(ops.$lte(4, 5)).to.be(false);
+      expect(ops.$lte(4, 4)).to.be(true);
+      expect(ops.$lte(false, 4)).to.be(false);
     });
 
     it('exists', function(){
