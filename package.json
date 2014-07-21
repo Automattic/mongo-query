@@ -19,5 +19,9 @@
       "mongo-query/filter.js": "filter.js",
       "mongo-query/ops.js": "ops.js"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cloudup/mongo-query"
   }
 }
