@@ -10,14 +10,7 @@
   },
   "devDependencies": {
     "mocha": "*",
-    "expect.js": "*"
-  },
-  "component": {
-    "scripts": {
-      "mongo-query/index.js": "index.js",
-      "mongo-query/mods.js": "mods.js",
-      "mongo-query/filter.js": "filter.js",
-      "mongo-query/ops.js": "ops.js"
-    }
+    "expect.js": "*",
+    "browserify": "2.35.1"
   }
 }
