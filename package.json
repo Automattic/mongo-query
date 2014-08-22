@@ -4,7 +4,7 @@
   "dependencies": {
     "debug": "*",
     "type-component": "0.0.1",
-    "mongo-eql": "0.1.2",
+    "mongo-eql": "cloudup/mongo-eql#0.1.2"
     "object-component": "0.0.3",
     "dot-component": "0.1.1"
   },
