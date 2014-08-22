@@ -1,4 +1,10 @@
 
+0.5.5 / 2014-08-22
+==================
+
+ * ops: more component fixing
+ * attempt to fix component build
+
 0.5.4 / 2014-08-22
 ==================
 
