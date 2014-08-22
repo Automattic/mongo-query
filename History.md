@@ -1,4 +1,11 @@
 
+0.5.3 / 2014-08-22
+==================
+
+ * package: update "mongo-eql" to v0.1.2
+ * Check for type in $gt, $lt, etc. and fix tests for $lte (#21, @vkarpov15)
+ * remove duplicate manifest
+
 0.5.2 / 2014-01-27
 ==================
 
