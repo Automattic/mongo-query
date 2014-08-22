@@ -12,6 +12,11 @@
     "mocha": "*",
     "expect.js": "*"
   },
+  "browser": {
+    "dot": "dot-component",
+    "type": "type-component",
+    "object": "object-component"
+  },
   "component": {
     "scripts": {
       "mongo-query/index.js": "index.js",
