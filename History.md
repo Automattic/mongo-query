@@ -2,36 +2,36 @@
 0.5.5 / 2014-08-22
 ==================
 
- * ops: more component fixing
- * attempt to fix component build
+  * ops: more component fixing
+  * attempt to fix component build
 
 0.5.4 / 2014-08-22
 ==================
 
- * package: use github version of mongo-eql v0.1.2
+  * package: use github version of mongo-eql v0.1.2
 
 0.5.3 / 2014-08-22
 ==================
 
- * package: update "mongo-eql" to v0.1.2
- * Check for type in $gt, $lt, etc. and fix tests for $lte (#21, @vkarpov15)
- * remove duplicate manifest
+  * package: update "mongo-eql" to v0.1.2
+  * Check for type in $gt, $lt, etc. and fix tests for $lte (#21, @vkarpov15)
+  * remove duplicate manifest
 
 0.5.2 / 2014-01-27
 ==================
 
- * fix type dep for browserify
+  * fix type dep for browserify
 
 0.5.1 / 2014-01-27
 ==================
 
- * package: bump dot
+  * package: bump dot
 
 0.5.0 / 2014-01-27
 ==================
 
- * fix require madness
- * use new `mongo-eql` component
+  * fix require madness
+  * use new `mongo-eql` component
 
 0.4.2 / 2013-04-02
 ==================
