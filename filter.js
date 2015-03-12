@@ -3,20 +3,12 @@
  * Module dependencies.
  */
 
-var eql = require('mongo-eql');
 var ops = require('./ops');
+var eql = require('mongo-eql');
+var dot = require('dot-component');
+var type = require('component-type');
+var object = require('object-component');
 var debug = require('debug')('mongo-query');
-var object, type, dot;
-
-try {
-  dot = require('dot');
-  type = require('type');
-  object = require('object');
-} catch(e){
-  dot = require('dot-component');
-  type = require('type-component');
-  object = require('object-component');
-}
 
 /**
  * Module exports.

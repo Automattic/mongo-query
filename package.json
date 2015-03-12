@@ -2,27 +2,14 @@
   "name": "mongo-query",
   "version": "0.5.5",
   "dependencies": {
+    "component-type": "1.1.0",
     "debug": "*",
-    "type-component": "0.0.1",
+    "dot-component": "0.1.1",
     "mongo-eql": "cloudup/mongo-eql#0.1.2",
-    "object-component": "0.0.3",
-    "dot-component": "0.1.1"
+    "object-component": "0.0.3"
   },
   "devDependencies": {
     "mocha": "*",
     "expect.js": "*"
-  },
-  "browser": {
-    "dot": "dot-component",
-    "type": "type-component",
-    "object": "object-component"
-  },
-  "component": {
-    "scripts": {
-      "mongo-query/index.js": "index.js",
-      "mongo-query/mods.js": "mods.js",
-      "mongo-query/filter.js": "filter.js",
-      "mongo-query/ops.js": "ops.js"
-    }
   }
 }

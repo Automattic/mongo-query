@@ -4,23 +4,10 @@
  */
 
 var eql = require('mongo-eql');
+var dot = require('dot-component');
+var type = require('component-type');
+var keys = require('object-component').keys;
 var debug = require('debug')('mongo-query');
-var type, dot, keys;
-try {
-  dot = require('dot');
-} catch(e){
-  dot = require('dot-component');
-}
-try {
-  type = require('type');
-} catch(e){
-  type = require('type-component');
-}
-try {
-  keys = require('object').keys;
-} catch(e){
-  keys = require('object-component').keys;
-}
 
 /**
  * Performs a `$set`.
