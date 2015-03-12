@@ -1,4 +1,11 @@
 
+0.5.6 / 2015-03-12
+==================
+
+  * ops: fix "component-type" require call
+  * package: add "repository" field
+  * remove component
+
 0.5.5 / 2014-08-22
 ==================
 
