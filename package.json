@@ -15,5 +15,6 @@
   "devDependencies": {
     "mocha": "*",
     "expect.js": "*"
-  }
+  },
+  "license": "MIT"
 }
