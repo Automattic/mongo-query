@@ -13,7 +13,7 @@ var query = require('mongo-query');
 var obj = {
   name: 'Tobi',
   age: 8,
-  location: { country: 'Canada', zip: 123 }
+  location: { country: 'Canada', zip: 123 },
   likes: [{ id: 1, name: 'Food' }, { id: 2, name: 'Stuff' }]
 };
 
