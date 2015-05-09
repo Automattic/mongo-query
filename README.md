@@ -42,11 +42,11 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
   - Options:
     - `strict` if true, only modifies if `filter` has a match (`false`).
 
-### query.filter(query)
+### query.filter(obj, query)
 
   Returns a `Query` object to perform tests on.
 
-  Example: `query.filter({ a: { $gt: 3 } }).test({ a: 1 })`. For the
+  Example: `query.filter([{ a: 4 }],{ a: { $gt: 3 } })`. For the
   complete filter API refer to
   [filtr](https://github.com/logicalparadox/filtr/).
 
