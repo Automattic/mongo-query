@@ -18,7 +18,7 @@ var obj = {
 };
 
 // run an operation and get changes
-var changes = query(obj, { $set: { 'location.country': 'US' } });
+var changes = query(obj, {}, { $set: { 'location.country': 'US' } });
 ```
 
 ## Features
