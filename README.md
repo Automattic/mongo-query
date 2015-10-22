@@ -18,7 +18,7 @@ var obj = {
 };
 
 // run an operation and get changes
-var changes = query(obj, { $set: { 'location.country': 'US' } });
+var changes = query(obj, {}, { $set: { 'location.country': 'US' } });
 ```
 
 ## Features
@@ -49,18 +49,6 @@ var changes = query(obj, { $set: { 'location.country': 'US' } });
   Example: `query.filter({ a: { $gt: 3 } }).test({ a: 1 })`. For the
   complete filter API refer to
   [filtr](https://github.com/logicalparadox/filtr/).
-
-### query.get(obj, key)
-
-  Gets the `key` from the given `obj`, which can use [dot
-  notation](http://www.mongodb.org/display/DOCS/Dot+Notation+\(Reaching+into+Objects\)).
-
-  Example: `query.get(obj, 'some.key')`.
-
-### query.set(obj, key, val)
-
-  Sets the `key` on `obj` with the given `val`. Key can use [dot
-  notation](http://www.mongodb.org/display/DOCS/Dot+Notation+\(Reaching+into+Objects\)).
 
 ### change
 
