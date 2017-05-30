@@ -82,6 +82,12 @@ describe('filter', function(){
       expect(ops.$size(0, [1])).to.be(false);
       expect(ops.$size(0, [])).to.be(true);
     });
+
+    it('type', function(){
+      expect(ops.$type(2, 'number')).to.be(true);
+      expect(ops.$type(new Date, 'date')).to.be(true);
+      expect(ops.$type({}, 'string')).to.be(false);
+    });
   });
 
   describe('simple', function(){

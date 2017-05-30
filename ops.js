@@ -95,3 +95,11 @@ exports.$nin = function $nin(matcher, val){
 exports.$size = function(matcher, val){
   return Array.isArray(val) && matcher == val.length;
 };
+
+/**
+ * @type: type of value
+ */
+
+exports.$type = function(matcher, val){
+  return type(matcher) === val;
+};
